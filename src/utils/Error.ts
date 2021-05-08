@@ -30,14 +30,14 @@ export interface ApiError {
 export function handleError(e: ApiError): void {
     switch (e.kind) {
         case ApiErrorKind.BasisError:
-            console.log("Basis Error: " + e.msg)
-            break
+            console.log('Basis Error: ' + e.msg);
+            break;
         case ApiErrorKind.InvalidInput:
-            console.log("Invalid Input: " + e.msg)
-            break
+            console.log('Invalid Input: ' + e.msg);
+            break;
         default:
-            console.log(e)
-            console.log("Default")
+            console.log(e);
+            console.log('Default');
     }
 }
 

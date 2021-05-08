@@ -1,20 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './styles/App.css';
-import {handleError} from "./utils";
-import {add} from "./api"
+import { handleError } from './utils';
+import { add } from './api';
 
 
 function App() {
-    let [sum, setSum] = useState(new Array<Array<number>>())
+    let [sum, setSum] = useState(new Array<Array<number>>());
 
     useEffect(() => {
-        add([[1, 2], [3, 4]], [[1, 2], [3, 4]]).then(setSum).catch(handleError)
-    }, [])
+        add([[1, 2], [3, 4]], [[1, 2], [3, 4]]).then(setSum).catch(handleError);
+    }, []);
 
     return (
-        <div className="App">
-            <header className="App-header">
-                {sum}
+        <div className='App'>
+            <header className='App-header'>
+                { sum }
+                <Link to='/arithmetic-calculator'>Calculator</Link>
             </header>
         </div>
     );
