@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import './App.css';
-import {handleError} from "./Error";
-import {add} from "./Arithmetic"
+import './styles/App.css';
+import {handleError} from "./utils";
+import {add} from "./api"
 
 
 function App() {
