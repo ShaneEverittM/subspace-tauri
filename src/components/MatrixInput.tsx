@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useReducer, useState } from 'react';
-import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+
 import { range } from '../utils';
+
+import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
