@@ -1,6 +1,4 @@
 import { Box, Container, Typography } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { add } from '../api';
 import { handleError } from '../utils';
@@ -15,11 +13,8 @@ function Splash() {
     return (
         <Container>
             <Box>
-                <Typography> { sum } </Typography>
+                <Typography> Math Result: { sum } </Typography>
             </Box>
-            <Button variant='contained' color='primary' component={ Link } to='/arithmetic-calculator'>
-                Calculator
-            </Button>
         </Container>
     );
 }

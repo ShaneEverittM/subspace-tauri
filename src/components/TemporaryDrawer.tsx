@@ -1,6 +1,7 @@
 import React, { KeyboardEvent, MouseEvent, useState } from 'react';
 import clsx from 'clsx';
 import { Button, Drawer, makeStyles } from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
 
 
 const useStyles = makeStyles({
@@ -56,7 +57,7 @@ function TemporaryDrawer({screenEdge, items}: TemporaryDrawerProps) {
 
     return (
         <div>
-            <Button onClick={ makeClickHandler('open') }>{ screenEdge }</Button>
+            <Button onClick={ makeClickHandler('open') }><MenuIcon/></Button>
             { /* This anchor prop sets the actual position */ }
             <Drawer anchor={ screenEdge } open={ openState }
                     onClose={ makeClickHandler('close') }>

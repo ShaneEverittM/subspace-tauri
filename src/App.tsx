@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Route } from 'react-router-dom';
+import { HashRouter, Link, Route } from 'react-router-dom';
 import { ArithmeticCalculator, Splash } from './pages';
 import { TemporaryDrawer } from './components';
 import {
@@ -12,9 +12,10 @@ import {
     ListItemIcon,
     ListItemText
 } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import { ThemeProvider } from '@material-ui/core/styles';
+import HomeIcon from '@material-ui/icons/Home';
+import FunctionsIcon from '@material-ui/icons/Functions';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 
 // Returns a list of items to render in the drawer
@@ -22,22 +23,22 @@ const drawerItems = () => (
     <>
         { /* Items within the top section of the drawer */ }
         <List>
-            { ['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                <ListItem button key={ text }>
-                    <ListItemIcon>{ index % 2 === 0 ? <InboxIcon/> : <MailIcon/> }</ListItemIcon>
-                    <ListItemText primary={ text }/>
-                </ListItem>
-            )) }
+            <ListItem button key='Home' component={ Link } to='/'>
+                <ListItemIcon><HomeIcon/></ListItemIcon>
+                <ListItemText primary='Home'/>
+            </ListItem>
+            <ListItem button key='Calculator' component={ Link } to='/arithmetic-calculator'>
+                <ListItemIcon><FunctionsIcon/></ListItemIcon>
+                <ListItemText primary='Calculator'/>
+            </ListItem>
         </List>
         <Divider/>
         { /* Items within the bottom section of the drawer */ }
         <List>
-            { ['All mail', 'Trash', 'Spam'].map((text, index) => (
-                <ListItem button key={ text }>
-                    <ListItemIcon>{ index % 2 === 0 ? <InboxIcon/> : <MailIcon/> }</ListItemIcon>
-                    <ListItemText primary={ text }/>
-                </ListItem>
-            )) }
+            <ListItem button key='Settings'>
+                <ListItemIcon><SettingsIcon/></ListItemIcon>
+                <ListItemText primary='Settings'/>
+            </ListItem>
         </List>
     </>
 );
@@ -55,7 +56,7 @@ function App() {
             <CssBaseline/>
             { /* Multiple pages */ }
             <HashRouter>
-                <Container>
+                <Container style={ {padding: 'unset', display: 'flex', justifyContent: 'flex-start'} }>
                     <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
                 </Container>
                 <Container>
