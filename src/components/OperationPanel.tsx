@@ -3,7 +3,7 @@ import React from 'react';
 function OperationPanel() {
     return (
         <div>
-            hello
+            TODO: Operation Panel
         </div>
     );
 }
