@@ -27,7 +27,7 @@ const drawerItems = () => (
                 <ListItemIcon><HomeIcon/></ListItemIcon>
                 <ListItemText primary='Home'/>
             </ListItem>
-            <ListItem button key='Calculator' component={ Link } to='/arithmetic-calculator'>
+            <ListItem button key='Calculator' component={ Link } to='/calculator'>
                 <ListItemIcon><FunctionsIcon/></ListItemIcon>
                 <ListItemText primary='Calculator'/>
             </ListItem>
@@ -61,7 +61,7 @@ function App() {
                 </Container>
                 <Container>
                     <Route exact path='/' component={ Splash }/>
-                    <Route path='/arithmetic-calculator' component={ () => (<ArithmeticCalculator dimension={ 3 }/>) }/>
+                    <Route path='/calculator' component={ () => (<ArithmeticCalculator dimension={ 3 }/>) }/>
                 </Container>
             </HashRouter>
         </ThemeProvider>
