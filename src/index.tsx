@@ -1,24 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './styles/index.css';
 import App from './App';
-import ArithmeticCalculator from './pages/ArithmeticCalculator';
 import reportWebVitals from './reportWebVitals';
-import { HashRouter, Route } from 'react-router-dom';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <HashRouter>
-            <div>
-                <Route path='/' exact component={ App }/>
-                <Route path='/arithmetic-calculator' component={ ArithmeticCalculator }/>
-            </div>
-        </HashRouter>
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+ReactDOM.render(<App/>, document.getElementById('root'));
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// Pass logging function to profile application
 reportWebVitals();
