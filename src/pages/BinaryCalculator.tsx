@@ -1,8 +1,9 @@
 import React from 'react';
-import { MatrixInput, OperationPanel } from '../components';
+import { MatrixInput, OperationPanel, OperatorSymbol } from '../components';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { Box, Container } from '@material-ui/core';
+
 
 type BinaryCalculatorProps = {
     dimension: number
@@ -18,7 +19,7 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
                 { /* Left matrix */ }
                 <MatrixInput dimension={ dimension }/>
 
-                <Box fontSize={ 24 } style={ {display: 'flex', alignItems: 'center'} }>x</Box>
+                <OperatorSymbol symbol='divide'/>
 
                 { /* Right matrix */ }
                 <MatrixInput dimension={ dimension }/>
