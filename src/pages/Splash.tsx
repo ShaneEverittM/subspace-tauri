@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { add } from '../api';
 import { handleError } from '../utils';
 
-import { Box, Container, Typography } from '@material-ui/core';
+import { Container, Typography } from '@material-ui/core';
 
 function Splash() {
     let [sum, setSum] = useState(new Array<Array<number>>());
@@ -14,9 +14,7 @@ function Splash() {
 
     return (
         <Container>
-            <Box>
-                <Typography> Math Result: { sum } </Typography>
-            </Box>
+            <Typography> Math Result: { sum } </Typography>
         </Container>
     );
 }
