@@ -27,49 +27,45 @@ type MatrixInputProps = {
     dimension: number
 }
 
+type Cell = number | undefined
+
+function make2d<T>(size: number, init: T): Array<Array<T>> {
+    return [...Array(size)].map((_) => Array<T>(size).fill(init));
+}
+
+function updateUsing<T>(
+    setter: React.Dispatch<Array<Array<T>>>,
+    initial: Array<Array<T>>,
+    change: (arr: Array<Array<T>>) => void
+) {
+    let newArray = initial;
+    change(newArray);
+    setter(newArray);
+}
+
 function MatrixInput({dimension}: MatrixInputProps) {
-    const [values, setValues] = useState([...Array(dimension)].map((_) => Array<number | undefined>(dimension).fill(undefined)));
-    const [errors, setErrors] = useState([...Array(dimension)].map((_) => Array<boolean>(dimension).fill(false)));
-    const [focused, setFocused] = useState([...Array(dimension)].map((_) => Array<boolean>(dimension).fill(false)));
+    const [values, setValues] = useState(make2d<Cell>(dimension, undefined));
+    const [errors, setErrors] = useState(make2d<boolean>(dimension, false));
+    const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
     const classes = useStyles();
 
-
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        console.log(`row: {}, col: {}`, row, col);
-
-        let newFocused = [...Array(dimension)].map((_) => Array<boolean>(dimension).fill(false));
-        newFocused[row][col] = true;
-        setFocused(newFocused);
-
+        // Store current cell as focused so that across reloads the cursor appears stationary
+        updateUsing(setFocused, make2d(dimension, false), (arr) => arr[row][col] = true);
 
         let number = Number.parseInt(e.target.value, 10);
         if (Number.isNaN(number) || e.target.value === '') {
-            // // // Set error
-            let newErrors = errors;
-            newErrors[row][col] = true;
-            setErrors(newErrors);
+            // Set error
+            updateUsing(setErrors, errors, (arr) => arr[row][col] = true);
 
-            // // Store value
-            let newValues = values;
-            newValues[row][col] = undefined;
-            // Same reference therefore no re-render >:^(
-            setValues(newValues);
-
-
-            console.log(errors);
+            // Set value to undefined
+            updateUsing(setValues, values, (arr) => arr[row][col] = undefined);
         } else {
-            // // Clear error
-            let newErrors = errors;
-            newErrors[row][col] = false;
-            setErrors(newErrors);
+            // Clear error
+            updateUsing(setErrors, errors, (arr) => arr[row][col] = false);
 
-            // // Store value
-            let newValues = values;
-            newValues[row][col] = number;
-            // Same reference therefore no re-render >:^(
-            setValues(newValues);
-
-            console.log(values);
+            // Set value to current input value
+            updateUsing(setValues, values, (arr) => arr[row][col] = number);
         }
     };
 
