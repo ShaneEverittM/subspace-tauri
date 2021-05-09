@@ -2,9 +2,19 @@ import React from 'react';
 import { HashRouter, Route } from 'react-router-dom';
 import { ArithmeticCalculator, Splash } from './pages';
 import { TemporaryDrawer } from './components';
-import { Container, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import {
+    Container,
+    createMuiTheme,
+    CssBaseline,
+    Divider,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText
+} from '@material-ui/core';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import { ThemeProvider } from '@material-ui/core/styles';
 
 
 // Returns a list of items to render in the drawer
@@ -32,17 +42,28 @@ const drawerItems = () => (
     </>
 );
 
+const theme = createMuiTheme({
+    palette: {
+        type: 'dark'
+    }
+});
+
 function App() {
     return (
-        <HashRouter>
-            <Container>
-                <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
-            </Container>
-            <Container>
-                <Route exact path='/' component={ Splash }/>
-                <Route path='/arithmetic-calculator' component={ ArithmeticCalculator }/>
-            </Container>
-        </HashRouter>
+        <ThemeProvider theme={ theme }>
+            { /* More consistent CSS*/ }
+            <CssBaseline/>
+            { /* Multiple pages */ }
+            <HashRouter>
+                <Container>
+                    <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
+                </Container>
+                <Container>
+                    <Route exact path='/' component={ Splash }/>
+                    <Route path='/arithmetic-calculator' component={ () => (<ArithmeticCalculator dimension={ 3 }/>) }/>
+                </Container>
+            </HashRouter>
+        </ThemeProvider>
     );
 }
 

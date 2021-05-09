@@ -4,20 +4,24 @@ import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import { Box, Container } from '@material-ui/core';
 
-function ArithmeticCalculator() {
+type BinaryCalculatorProps = {
+    dimension: number
+}
+
+function BinaryCalculator({dimension}: BinaryCalculatorProps) {
     return (
         <Container>
-            <Button variant='contained' color='primary'>
-                <Link to='/'>Home</Link>
+            <Button variant='contained' color='primary' component={ Link } to='/'>
+                Home
             </Button>
             <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} }>
                 { /* Left matrix */ }
-                <MatrixInput/>
+                <MatrixInput dimension={ dimension }/>
 
-                <Box style={ {display: 'flex'} }>+</Box>
+                <Box fontSize={ 24 } style={ {display: 'flex', alignItems: 'center'} }>x</Box>
 
                 { /* Right matrix */ }
-                <MatrixInput/>
+                <MatrixInput dimension={ dimension }/>
             </Box>
 
             { /* Operations that can be applied to either or both */ }
@@ -26,4 +30,4 @@ function ArithmeticCalculator() {
     );
 }
 
-export default ArithmeticCalculator;
+export default BinaryCalculator;
