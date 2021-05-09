@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useReducer, useState } from 'react';
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 import { range } from '../utils';
 
@@ -33,42 +33,55 @@ function make2d<T>(size: number, init: T): Array<Array<T>> {
     return [...Array(size)].map((_) => Array<T>(size).fill(init));
 }
 
-function updateUsing<T>(
-    setter: React.Dispatch<Array<Array<T>>>,
-    initial: Array<Array<T>>,
-    change: (arr: Array<Array<T>>) => void
-) {
-    let newArray = initial;
-    change(newArray);
-    setter(newArray);
+function valueReducer(
+    previous: Array<Array<Cell>>,
+    action: { row: number, col: number, newVal: number | undefined }): Array<Array<Cell>> {
+    let {row, col, newVal} = action;
+    previous[row][col] = newVal;
+    return previous;
 }
 
+function errorReducer(
+    previous: Array<Array<boolean>>,
+    action: { row: number, col: number, newVal: boolean }): Array<Array<boolean>> {
+    let {row, col, newVal} = action;
+    previous[row][col] = newVal;
+    return previous;
+}
+
+
 function MatrixInput({dimension}: MatrixInputProps) {
-    const [values, setValues] = useState(make2d<Cell>(dimension, undefined));
-    const [errors, setErrors] = useState(make2d<boolean>(dimension, false));
+    const [values, setValue] = useReducer(valueReducer, make2d<Cell>(dimension, undefined));
+    const [errors, setError] = useReducer(errorReducer, make2d<boolean>(dimension, false));
     const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
     const classes = useStyles();
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // Store current cell as focused so that across reloads the cursor appears stationary
-        updateUsing(setFocused, make2d(dimension, false), (arr) => arr[row][col] = true);
+        // By creating a new focused array, React's state hook will see it as a new value, this will trigger a state
+        // update refreshing the error state but also store what was focused so that the user does not lose their place.
+        let newFocused = make2d(dimension, false);
+        newFocused[row][col] = true;
+        setFocused(newFocused);
 
-        let number = Number.parseInt(e.target.value, 10);
-        if (Number.isNaN(number) || e.target.value === '') {
+        let newVal = Number.parseInt(e.target.value, 10);
+
+        // If user entered an invalid string, or emptied the TextField
+        if (Number.isNaN(newVal) || e.target.value === '') {
             // Set error
-            updateUsing(setErrors, errors, (arr) => arr[row][col] = true);
+            setError({row, col, newVal: true});
 
             // Set value to undefined
-            updateUsing(setValues, values, (arr) => arr[row][col] = undefined);
+            setValue({row, col, newVal: undefined});
         } else {
             // Clear error
-            updateUsing(setErrors, errors, (arr) => arr[row][col] = false);
+            setError({row, col, newVal: false});
 
             // Set value to current input value
-            updateUsing(setValues, values, (arr) => arr[row][col] = number);
+            setValue({row, col, newVal});
         }
     };
 
+    // Sub-component for each row of the matrix
     function FormRow({dimension, row}: MatrixRowProps) {
         return (
             <>
@@ -82,7 +95,7 @@ function MatrixInput({dimension}: MatrixInputProps) {
                             error={ errors[row][col] }
                             variant='outlined'
                             size='small'
-                            inputProps={ {value: values[row][col]} }
+                            value={ values[row][col] }
                             onChange={ handleInput(row, col) }
                         />
                     </Grid>);
@@ -93,7 +106,7 @@ function MatrixInput({dimension}: MatrixInputProps) {
 
     return (
         <Container className={ classes.root }>
-            { /* 'clone' causes the underlying DOM node used byt Box to just be the child node instead of a new div */ }
+            { /* 'clone' causes the underlying DOM node used by Box to just be the child node instead of a new div */ }
             <Box justifyContent='center' clone>
                 <Grid container spacing={ 1 }>
                     { range(dimension).map((i) => (
