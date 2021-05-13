@@ -19,6 +19,10 @@
       <option name="SPACES_WITHIN_IMPORTS" value="true" />
       <option name="SPACES_WITHIN_INTERPOLATION_EXPRESSIONS" value="true" />
     </TypeScriptCodeStyleSettings>
+    <codeStyleSettings language="TypeScript">
+      <option name="WRAP_COMMENTS" value="true" />
+      <option name="WRAP_ON_TYPING" value="0" />
+    </codeStyleSettings>
     <codeStyleSettings language="kotlin">
       <option name="CALL_PARAMETERS_WRAP" value="5" />
       <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
