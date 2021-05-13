@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useReducer, useState } from 'react';
 
-import { range } from '../utils';
+import { make2d, Matrix, Maybe, range } from '../utils';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 
@@ -29,32 +29,29 @@ type MatrixInputProps = {
     dimension: number
 }
 
-type Cell = number | undefined
+/**
+ * Represents the action applied to matrices held in state.
+ *
+ * @typeParam The value the matrix holds.
+ */
+type Action<T> = { row: number, col: number, newVal: T }
 
-function make2d<T>(size: number, init: T): Array<Array<T>> {
-    return [...Array(size)].map((_) => Array<T>(size).fill(init));
+/**
+ * Creates a specialized reducer function for `useReducer`.
+ *
+ * @typeParam The type of the element of the Matrix being edited.
+ */
+function makeReducer<T>(): (previous: Matrix<T>, action: Action<T>) => Matrix<T> {
+    return function (previous: Matrix<T>, action: Action<T>): Matrix<T> {
+        const {row, col, newVal} = action;
+        previous[row][col] = newVal;
+        return previous;
+    };
 }
-
-function valueReducer(
-    previous: Array<Array<Cell>>,
-    action: { row: number, col: number, newVal: number | undefined }): Array<Array<Cell>> {
-    let {row, col, newVal} = action;
-    previous[row][col] = newVal;
-    return previous;
-}
-
-function errorReducer(
-    previous: Array<Array<boolean>>,
-    action: { row: number, col: number, newVal: boolean }): Array<Array<boolean>> {
-    let {row, col, newVal} = action;
-    previous[row][col] = newVal;
-    return previous;
-}
-
 
 function MatrixInput({dimension}: MatrixInputProps) {
-    const [values, setValue] = useReducer(valueReducer, make2d<Cell>(dimension, undefined));
-    const [errors, setError] = useReducer(errorReducer, make2d<boolean>(dimension, false));
+    const [values, setValue] = useReducer(makeReducer<Maybe<number>>(), make2d<Maybe<number>>(dimension, undefined));
+    const [errors, setError] = useReducer(makeReducer<boolean>(), make2d<boolean>(dimension, false));
     const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
     const classes = useStyles();
 
