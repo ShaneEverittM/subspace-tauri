@@ -1,5 +1,32 @@
 export * from './Error';
 
+/**
+ * Creates an array from 0 to `length`.
+ * @param length The upper bound (non-inclusive) of the range.
+ */
 export function range(length: number): number[] {
     return [...Array(length).keys()];
 }
+
+/**
+ * Creates a two dimensional `Array<Array<T>>` with a given value for all elements.
+ *
+ * @param size The number of and size of each `Array<T>`.
+ * @param init An optional initial value for all elements.
+ */
+export function make2d<T>(size: number, init?: T): Matrix<T> {
+    if (init) {
+        return [...Array(size)].map((_) => Array<T>(size).fill(init));
+    } else {
+        return [...Array(size)].map((_) => Array<T>(size));
+    }
+}
+
+/**
+ * Represents a type that might not be there in in situation where the `?` operator is not valid.
+ *
+ * @typeParam The type that might be there.
+ */
+export type Maybe<T> = T | undefined
+
+export type Matrix<T> = Array<Array<T>>
