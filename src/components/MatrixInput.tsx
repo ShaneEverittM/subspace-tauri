@@ -2,10 +2,10 @@ import React, { ChangeEvent, useReducer, useState } from 'react';
 
 import { make2d, Matrix, Maybe, range } from '../utils';
 
-import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, Container, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
+    ({
         root: {
             flexGrow: 1,
         },
@@ -108,9 +108,9 @@ function MatrixInput({dimension}: MatrixInputProps) {
             { /* 'clone' causes the underlying DOM node used by Box to just be the child node instead of a new div */ }
             <Box justifyContent='center' clone>
                 <Grid container spacing={ 1 }>
-                    { range(dimension).map((i) => (
-                        <Grid key={ i + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <FormRow dimension={ dimension } row={ i }/>
+                    { range(dimension).map((row) => (
+                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
+                            <FormRow dimension={ dimension } row={ row }/>
                         </Grid>
                     )) }
                 </Grid>
