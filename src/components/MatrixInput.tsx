@@ -2,10 +2,10 @@ import React, { ChangeEvent, useReducer, useState } from 'react';
 
 import { make2d, Matrix, Maybe, range } from '../utils';
 
-import { Box, Container, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
-    ({
+    createStyles({
         root: {
             flexGrow: 1,
         },
