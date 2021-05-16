@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useReducer, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
-import { make2d, Matrix, Maybe, range } from '../utils';
+import { make2d, Maybe, range } from '../utils';
+import { Action } from '../pages/BinaryCalculator';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 
@@ -27,31 +28,13 @@ type MatrixRowProps = {
 
 type MatrixInputProps = {
     dimension: number
+    values: Array<Array<Maybe<number>>>
+    setValue: React.Dispatch<Action<Maybe<number>>>
+    errors: Array<Array<boolean>>
+    setError: React.Dispatch<Action<boolean>>
 }
 
-/**
- * Represents the action applied to matrices held in state.
- *
- * @typeParam The value the matrix holds.
- */
-type Action<T> = { row: number, col: number, newVal: T }
-
-/**
- * Creates a specialized reducer function for `useReducer`.
- *
- * @typeParam The type of the element of the Matrix being edited.
- */
-function makeReducer<T>(): (previous: Matrix<T>, action: Action<T>) => Matrix<T> {
-    return function (previous: Matrix<T>, action: Action<T>): Matrix<T> {
-        const {row, col, newVal} = action;
-        previous[row][col] = newVal;
-        return previous;
-    };
-}
-
-function MatrixInput({dimension}: MatrixInputProps) {
-    const [values, setValue] = useReducer(makeReducer<Maybe<number>>(), make2d<Maybe<number>>(dimension, undefined));
-    const [errors, setError] = useReducer(makeReducer<boolean>(), make2d<boolean>(dimension, false));
+function MatrixInput({dimension, values, setValue, errors, setError}: MatrixInputProps) {
     const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
     const classes = useStyles();
 
