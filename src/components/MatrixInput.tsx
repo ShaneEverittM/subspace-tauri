@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
-import { make2d, Maybe, range } from '../utils';
+import { isNumber, Maybe, range } from '../utils';
 import { Action } from '../pages/BinaryCalculator';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
@@ -30,36 +30,31 @@ type MatrixInputProps = {
     dimension: number
     values: Array<Array<Maybe<number>>>
     setValue: React.Dispatch<Action<Maybe<number>>>
-    errors: Array<Array<boolean>>
-    setError: React.Dispatch<Action<boolean>>
 }
 
-function MatrixInput({dimension, values, setValue, errors, setError}: MatrixInputProps) {
-    const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
+function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
     const classes = useStyles();
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // By creating a new focused array, React's state hook will see it as a new value, this will trigger a state
-        // update refreshing the error state but also store what was focused so that the user does not lose their place.
-        let newFocused = make2d(dimension, false);
-        newFocused[row][col] = true;
-        setFocused(newFocused);
-
-        let newVal = Number.parseInt(e.target.value, 10);
+        let valueStr = e.target.value;
 
         // If user entered an invalid string, or emptied the TextField
-        if (Number.isNaN(newVal) || e.target.value === '') {
-            // Set error
-            setError({row, col, newVal: true});
-
-            // Set value to undefined
-            setValue({row, col, newVal: undefined});
+        if (isNumber(valueStr)) {
+            setValue({row, col, newVal: Number(valueStr)});
         } else {
-            // Clear error
-            setError({row, col, newVal: false});
-
-            // Set value to current input value
-            setValue({row, col, newVal});
+            // Not valid number, could be due to bad input, or just an empty string
+            let curVal = values[row][col];
+            if (e.target.value === '') {
+                // If input was emtpy, clear screen and state
+                e.target.value = '';
+                setValue({row, col, newVal: undefined});
+            } else if (curVal) {
+                // If there is a value and the last input wasn't nothing, maintain last valid state on screen
+                e.target.value = curVal.toString();
+            } else {
+                // If we had no value and user entered bad input, keep it empty
+                e.target.value = '';
+            }
         }
     };
 
@@ -73,8 +68,6 @@ function MatrixInput({dimension, values, setValue, errors, setError}: MatrixInpu
                         <TextField
                             className={ classes.textField }
                             required
-                            autoFocus={ focused[row][col] }
-                            error={ errors[row][col] }
                             variant='outlined'
                             size='small'
                             value={ values[row][col] }

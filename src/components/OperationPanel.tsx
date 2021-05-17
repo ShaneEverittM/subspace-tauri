@@ -10,12 +10,10 @@ type OperationPanelProps = {
     operator: OperatorType
     rightValues: Array<Array<Maybe<number>>>
     leftValues: Array<Array<Maybe<number>>>
-    rightErrors: Array<Array<boolean>>
-    leftErrors: Array<Array<boolean>>
     setOperator: React.Dispatch<SetStateAction<OperatorType>>
 }
 
-function OperationPanel({operator, rightValues, rightErrors, leftValues, leftErrors}: OperationPanelProps) {
+function OperationPanel({operator, rightValues, leftValues}: OperationPanelProps) {
 
     const submit = () => {
         console.log('Verifying...');
@@ -24,16 +22,6 @@ function OperationPanel({operator, rightValues, rightErrors, leftValues, leftErr
             console.log('OOPS I SHIDDED');
         }
         if (!leftValues.flat().every(e => e)) {
-            // error
-            console.log('OOPS I SHIDDED');
-        }
-
-        if (rightErrors.flat().some(e => e)) {
-            // error
-            console.log('OOPS I SHIDDED');
-        }
-
-        if (leftErrors.flat().some(e => e)) {
             // error
             console.log('OOPS I SHIDDED');
         }

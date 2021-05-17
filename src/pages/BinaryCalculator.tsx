@@ -32,10 +32,18 @@ function makeReducer<T>(): (previous: Matrix<T>, action: Action<T>) => Matrix<T>
 }
 
 function BinaryCalculator({dimension}: BinaryCalculatorProps) {
-    const [leftValues, setLetValue] = useReducer(makeReducer<Maybe<number>>(), make2d<Maybe<number>>(dimension, undefined));
-    const [leftErrors, setLeftErrors] = useReducer(makeReducer<boolean>(), make2d<boolean>(dimension, false));
-    const [rightValues, setRightValue] = useReducer(makeReducer<Maybe<number>>(), make2d<Maybe<number>>(dimension, undefined));
-    const [rightErrors, setRightError] = useReducer(makeReducer<boolean>(), make2d<boolean>(dimension, false));
+
+    // Initialize states of left and right matrices
+    const [leftValues, setLetValue] = useReducer(
+        makeReducer<Maybe<number>>(),
+        make2d<Maybe<number>>(dimension, undefined)
+    );
+
+    const [rightValues, setRightValue] = useReducer(
+        makeReducer<Maybe<number>>(),
+        make2d<Maybe<number>>(dimension, undefined)
+    );
+
     const [operator, setOperator] = useState('plus' as OperatorType);
 
     return (
@@ -43,20 +51,18 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
             <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} }>
                 { /* Left matrix */ }
                 <MatrixInput dimension={ dimension } values={ leftValues } setValue={ setLetValue }
-                             errors={ leftErrors }
-                             setError={ setLeftErrors }/>
+                />
 
                 <OperatorSymbol operator={ operator }/>
 
                 { /* Right matrix */ }
                 <MatrixInput dimension={ dimension } values={ rightValues } setValue={ setRightValue }
-                             errors={ rightErrors }
-                             setError={ setRightError }/>
+                />
             </Box>
 
             { /* Operations that can be applied to either or both */ }
-            <OperationPanel operator={ operator } rightValues={ rightValues } rightErrors={ rightErrors }
-                            leftValues={ leftValues } leftErrors={ leftErrors } setOperator={ setOperator }/>
+            <OperationPanel operator={ operator } rightValues={ rightValues } leftValues={ leftValues }
+                            setOperator={ setOperator }/>
         </Container>
     );
 }
