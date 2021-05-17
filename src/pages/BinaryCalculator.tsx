@@ -62,7 +62,7 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
 
             { /* Operations that can be applied to either or both */ }
             <OperationPanel operator={ operator } rightValues={ rightValues } leftValues={ leftValues }
-                            setOperator={ setOperator }/>
+                            setOperator={ setOperator } dimension={ dimension }/>
         </Container>
     );
 }

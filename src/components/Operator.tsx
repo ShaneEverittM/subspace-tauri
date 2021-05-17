@@ -20,7 +20,7 @@ function getSymbol(operator: OperatorType): string {
     }
 }
 
-function Operator({operator,}: OperatorProps) {
+function Operator({operator}: OperatorProps) {
     return (
         <Box fontSize={ 24 } style={ {display: 'flex', alignItems: 'center'} }>
             { getSymbol(operator) }
