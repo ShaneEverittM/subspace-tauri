@@ -27,11 +27,11 @@ function OperationPanel({operator, rightValues, leftValues, dimension}: Operatio
     const submit = () => {
         if (!rightValues.flat().every(e => e)) {
             // error
-            console.log('OOPS I SHIDDED');
+            console.log('OOPS');
         }
         if (!leftValues.flat().every(e => e)) {
             // error
-            console.log('OOPS I SHIDDED');
+            console.log('OOPS');
         }
 
         switch (operator) {

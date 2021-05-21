@@ -54,6 +54,56 @@
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/wry-4d87cbaaaf7c0ab9/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-safe-2caf9dd1b6802d17/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-sys-669faca0ecf30ba5/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/anyhow-c1be52a8c2d080d6/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/app-276bf9524efe574c/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/bitflags-20c17e38a66f4ad4/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/blake3-efcef11f2ad44fd0/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/bzip2-sys-fef642854c9462a0/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/crc32fast-b59bc596a9e96b0a/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/crossbeam-utils-2f990d93de885cc0/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/doc-comment-e0ec7277b2ba14af/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/encoding_rs-d91cfc0f7a078916/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/generic-array-f60911ad1996c1d3/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/getrandom-6eda46d14da4192d/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/getrandom-90defcedf269ff1f/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/httparse-2f6c92b99feda4ad/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/indexmap-99e76270fb688e55/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/libc-42869ab947fbd8a9/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/log-571455c984520088/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/memchr-bfe6797c911a1bc4/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/memoffset-bf6d5fa4fc4db6b3/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/mime_guess-aa4bed8382e534de/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/miniz_oxide-79cef917dfe8a96f/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/native-tls-b591e700886ee49c/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/ntapi-ed3eba2b69ae954e/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/num-integer-ca9be4909ec5bb43/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/num-iter-cf8011fe025ce640/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/num-rational-18aaa48b7eaa7486/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/num-traits-926c5efa2955ea8c/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/proc-macro-hack-b0ce6b267bb0b7df/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/proc-macro-nested-cd25267ab38ab4b7/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/proc-macro2-a61e9acfd7601c47/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/rayon-c43e5c420a9b24b3/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/rayon-core-8d5009a3923ea0a3/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/rfd-e8891ddf8995232e/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/ryu-d1a8c0ab36a4ecfa/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/serde-575951d6152968de/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/serde_derive-385f6bd284d4bd15/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/serde_json-8c185ad1eaf6de31/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/syn-6c3953d490c2e8cb/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/sysinfo-0ef359d8f98dcd7e/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/tauri-31d12dc732c317dd/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/tauri-hotkey-sys-f2f7e9e64e1a0947/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/tauri-winit-75b7c6832aeff40b/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/tinyfiledialogs-8c0de75050635f28/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/tokio-17f0419e97db5f0b/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/typenum-0c06af3beab2e646/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/unicase-360c1ed99998df70/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/webview2-sys-0881be1f6c166bdd/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/winapi-ea88ba89dd2c4cbc/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/wry-696c3a986fa06d75/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-safe-a1850799c13e52d9/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-sys-3c34357b2518b19d/out" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src-tauri/target" />
     </content>
     <orderEntry type="inheritedJdk" />
