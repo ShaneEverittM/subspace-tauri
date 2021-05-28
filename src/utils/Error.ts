@@ -6,9 +6,8 @@
  * Must be 0 indexed numeric enumeration, since the serialized data coming from the backend depends
  * on the `#repr[u8]` serde tag.
  */
-export enum ApiErrorKind {
-    BasisError,
-    InvalidInput
+export enum BasisErrorKind {
+    InternalError
 }
 
 /**
@@ -18,8 +17,8 @@ export enum ApiErrorKind {
  *
  * Must conform to the type `ApiError` in `main.rs`
  */
-export interface ApiError {
-    kind: ApiErrorKind,
+export interface BasisError {
+    kind: BasisErrorKind,
     msg: string
 }
 
@@ -27,13 +26,10 @@ export interface ApiError {
  * Response to a backend error
  * @param e The error
  */
-export function handleError(e: ApiError): void {
+export function handleError(e: BasisError): void {
     switch (e.kind) {
-        case ApiErrorKind.BasisError:
+        case BasisErrorKind.InternalError:
             console.log('Basis Error: ' + e.msg);
-            break;
-        case ApiErrorKind.InvalidInput:
-            console.log('Invalid Input: ' + e.msg);
             break;
         default:
             console.log(e);

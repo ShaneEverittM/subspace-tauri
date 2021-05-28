@@ -3,7 +3,7 @@ import React, { useReducer, useState } from 'react';
 import { MatrixInput, OperationPanel, OperatorSymbol } from '../components';
 
 import { Box, Container } from '@material-ui/core';
-import { make2d, Matrix, Maybe } from '../utils';
+import { make2d, Maybe, Vec2d } from '../utils';
 import { OperatorType } from '../components/Operator';
 
 
@@ -23,8 +23,8 @@ export type Action<T> = { row: number, col: number, newVal: T }
  *
  * @typeParam The type of the element of the Matrix being edited.
  */
-function makeReducer<T>(): (previous: Matrix<T>, action: Action<T>) => Matrix<T> {
-    return function (previous: Matrix<T>, action: Action<T>): Matrix<T> {
+function makeReducer<T>(): (previous: Vec2d<T>, action: Action<T>) => Vec2d<T> {
+    return function (previous: Vec2d<T>, action: Action<T>): Vec2d<T> {
         const {row, col, newVal} = action;
         previous[row][col] = newVal;
         return previous;

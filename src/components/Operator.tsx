@@ -9,7 +9,6 @@ type OperatorProps = {
 }
 
 function getSymbol(operator: OperatorType): string {
-    console.log(`looking up symbol: ${ operator }`);
     switch (operator) {
         case 'minus':
             return '-';

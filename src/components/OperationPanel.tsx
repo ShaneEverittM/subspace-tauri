@@ -21,22 +21,28 @@ type OutputRowProps = {
 }
 
 function OperationPanel({operator, rightValues, leftValues, dimension}: OperationPanelProps) {
-    const [result, setResult] = useState(new Array<Array<number>>());
+    const [result, setResult] = useState(new Matrix<number>([]));
     const [validResult, setValidResult] = useState(false);
 
     const submit = () => {
         if (!rightValues.flat().every(e => e)) {
             // error
-            console.log('OOPS');
+            console.log('Must fill every cell');
+            return;
         }
+
         if (!leftValues.flat().every(e => e)) {
             // error
-            console.log('OOPS');
+            console.log('Must fill every cell');
+            return;
         }
 
         switch (operator) {
             case 'plus':
-                invoke<Matrix<number>>('add', {v1: leftValues, v2: rightValues})
+                invoke<Matrix<number>>('add', {
+                    m1: new Matrix(leftValues),
+                    m2: new Matrix(rightValues)
+                })
                     .then(setResult)
                     .then(() => setValidResult(true))
                     .catch(handleError);
@@ -78,7 +84,7 @@ function OperationPanel({operator, rightValues, leftValues, dimension}: Operatio
                 <Grid container spacing={ 1 }>
                     { validResult ? range(dimension).map((row) => (
                         <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <OutputRow dimension={ dimension } rowNumber={ row } row={ result[row] }/>
+                            <OutputRow dimension={ dimension } rowNumber={ row } row={ result.elements[row] }/>
                         </Grid>
                     )) : '' }
                 </Grid>
