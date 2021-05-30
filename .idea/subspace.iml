@@ -132,6 +132,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/wry-0b1848850a4542da/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-safe-ca945e45a2f6ef06/out" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/zstd-sys-a09d3ed4b0907bf0/out" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src-tauri/target/debug/build/app-4159efaa51954af8/out" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src-tauri/target" />
     </content>
     <orderEntry type="inheritedJdk" />

@@ -1,4 +1,5 @@
 use basis::Matrix;
+use paste::paste;
 use serde::Serialize;
 use serde_repr::Serialize_repr;
 
@@ -19,48 +20,88 @@ pub struct BasisError {
 type BasisResult<T> = Result<T, BasisError>;
 
 macro_rules! make_binary_functions {
-    ($($func:ident),*) => {
-        $(#[tauri::command]
-        pub fn $func(
-            m1: basis::Matrix<i32>,
-            m2: basis::Matrix<i32>
-        ) -> BasisResult<basis::Matrix<i32>> {
-            crate::util::ResultInto::result_into(m1.$func(&m2))
-        })*
+    (
+        [ $($type:ty),+ ],
+        $funcs:tt
+    ) => { $(make_binary_functions!($type, $funcs);)* };
+    (
+        $type:ty,
+        [ $($func:ident),* ]
+    ) => {
+        paste! {
+            $(#[tauri::command]
+            pub fn [<$func _$type>](
+                m1: basis::Matrix<$type>,
+                m2: basis::Matrix<$type>
+            ) -> BasisResult<basis::Matrix<$type>> {
+                crate::util::ResultInto::result_into(m1.$func(&m2))
+            })*
+       }
     };
 }
 
 macro_rules! make_scalar_functions {
-    ($($func:ident),*) => {
-        $(#[tauri::command]
-        pub fn $func(m: basis::Matrix<i32>, x: i32) -> basis::Matrix<i32> {
-            m.$func(x)
-        })*
+    (
+        [ $($type:ty),+ ],
+        $funcs:tt
+    ) => { $(make_scalar_functions!($type, $funcs);)* };
+    (
+        $type:ty,
+        [ $($func:ident),* ]
+    ) => {
+        paste! {
+            $(#[tauri::command]
+            pub fn [<$func _$type>](
+                m: basis::Matrix<$type>,
+                x: $type
+            ) -> basis::Matrix<$type> {
+                m.$func(x)
+            })*
+       }
     };
 }
 
-// Generate repetitive functions
-make_binary_functions![add, sub, mul, hadamard_product];
-make_scalar_functions![scalar_add, scalar_sub, scalar_mul, scalar_div];
+make_binary_functions!([f64, i64], [add, sub, mul, hadamard_product]);
+make_scalar_functions!([f64, i64], [scalar_add, scalar_sub, scalar_mul, scalar_div]);
 
 #[tauri::command]
-pub fn identity(n: usize) -> Matrix<i32> {
+pub fn identity_i64(n: usize) -> Matrix<i64> {
     Matrix::identity(n)
 }
 
 #[tauri::command]
-pub fn invert(mut m: Matrix<i32>) -> BasisResult<Matrix<i32>> {
+pub fn identity_f64(n: usize) -> Matrix<f64> {
+    Matrix::identity(n)
+}
+
+#[tauri::command]
+pub fn invert_i64(mut m: Matrix<i64>) -> BasisResult<Matrix<i64>> {
     m.invert().result_into()
 }
 
 #[tauri::command]
-pub fn transpose(mut m: Matrix<i32>) -> Matrix<i32> {
+pub fn invert_f64(mut m: Matrix<f64>) -> BasisResult<Matrix<f64>> {
+    m.invert().result_into()
+}
+
+#[tauri::command]
+pub fn transpose_i64(mut m: Matrix<i64>) -> Matrix<i64> {
     m.transpose();
     m
 }
 
 #[tauri::command]
-pub fn determinant(mut m: Matrix<i32>) -> i32 {
+pub fn transpose_f64(mut m: Matrix<f64>) -> Matrix<f64> {
+    m.transpose();
+    m
+}
+
+#[tauri::command]
+pub fn determinant_i64(mut m: Matrix<i64>) -> i64 {
     m.determinant()
 }
 
+#[tauri::command]
+pub fn determinant_f64(mut m: Matrix<f64>) -> f64 {
+    m.determinant()
+}
