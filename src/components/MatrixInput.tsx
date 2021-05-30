@@ -37,10 +37,13 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         let valueStr = e.target.value;
+        // console.log(`got ${ valueStr }`);
 
         // If user entered an invalid string, or emptied the TextField
         if (isNumber(valueStr)) {
+            // console.log(`setting ${ valueStr }`);
             setValue({row, col, newVal: Some(Number(valueStr))});
+            // console.log(values)
         } else {
             // Not valid number, could be due to bad input, or just an empty string
             let curVal = values[row][col];

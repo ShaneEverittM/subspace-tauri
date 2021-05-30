@@ -1,5 +1,5 @@
 import React, { ChangeEvent, SetStateAction } from 'react';
-import { Container, createStyles, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, Container, createStyles, makeStyles, TextField, Theme } from '@material-ui/core';
 import { None, Option, Some } from 'ts-results';
 import { isNumber } from '../utils';
 
@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(1),
             textAlign: 'center',
             color: theme.palette.text.secondary,
+            maxWidth: '50%'
         },
     }),
 );
@@ -47,14 +48,16 @@ function ScalarInput({value, setValue}: ScalarInputProps) {
 
     return (
         <Container>
-            <TextField
-                className={ classes.textField }
-                required
-                variant='outlined'
-                size='small'
-                value={ value.unwrapOr(undefined) }
-                onChange={ handleInput }
-            />
+            <Box style={ {display: 'flex', justifyContent: 'center', alignItems: 'center'} }>
+                <TextField
+                    className={ classes.textField }
+                    required
+                    variant='outlined'
+                    size='small'
+                    value={ value.unwrapOr('') }
+                    onChange={ handleInput }
+                />
+            </Box>
         </Container>
     );
 }

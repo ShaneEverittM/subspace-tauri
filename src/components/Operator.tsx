@@ -2,14 +2,14 @@ import React from 'react';
 
 import { Box } from '@material-ui/core';
 
-export const operators = ['plus', 'minus', 'divide'] as const;
+export const operators = ['plus', 'minus', 'divide', 'multiply'] as const;
 export type OperatorType = typeof operators[number];
 
 type OperatorProps = {
     operator: OperatorType
 }
 
-function getSymbol(operator: OperatorType): string {
+export function getSymbol(operator: OperatorType): string {
     switch (operator) {
         case 'minus':
             return '-';
@@ -17,6 +17,8 @@ function getSymbol(operator: OperatorType): string {
             return '/';
         case 'plus':
             return '+';
+        case 'multiply':
+            return 'x';
     }
 }
 

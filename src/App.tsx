@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
 
-import { BinaryCalculator, ScalarCalculator, Splash } from './pages';
+import { Calculator, Splash } from './pages';
 import { TemporaryDrawer } from './components';
 
 import {
@@ -36,7 +36,7 @@ const drawerItems = () => (
                     <ListItemText primary='Matrix-to-Scalar Calculator'/>
                 </ListItem>
             </List>
-            <Divider/>
+        <Divider/>
         { /* Items within the bottom section of the drawer */ }
         <List>
             <ListItem button key='Settings'>
@@ -65,8 +65,11 @@ function App() {
                 </Container>
                 <Container>
                     <Route exact path='/' component={ Splash }/>
-                    <Route path='/mtmcalculator' component={ () => (<BinaryCalculator dimension={ 3 }/>) }/>
-                    <Route path='/mtscalculator' component={ () => (<ScalarCalculator dimension={ 3 }/>) }/>
+                    <Route path='/mtmcalculator' component={ () => (
+                        <Calculator scalar={ false } operators={ ['multiply', 'plus', 'minus'] } dimension={ 3 }/>) }/>
+                    <Route path='/mtscalculator' component={ () => (
+                        <Calculator scalar={ true } operators={ ['multiply', 'divide', 'plus', 'minus'] }
+                                    dimension={ 3 }/>) }/>
                 </Container>
             </HashRouter>
         </ThemeProvider>

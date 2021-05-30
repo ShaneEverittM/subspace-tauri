@@ -83,14 +83,13 @@ export function packScalarArguments(left: Array<Array<Option<number>>>, right: O
 
 export function dispatchByOp(
     operator: OperatorType,
-    opToFunc: Record<OperatorType, string>,
+    opToFunc: (op: OperatorType) => string,
     args: any,
     callBack: (res: Matrix<number>) => void,
 ) {
     // index is safe because typescript is really neat :^)
-    invoke<Matrix<number>>(opToFunc[operator], args)
+    invoke<Matrix<number>>(opToFunc(operator), args)
         .then((res) => {
-            console.log(`result: ${ res.elements }`);
             callBack(res);
         })
         .catch(handleError);
