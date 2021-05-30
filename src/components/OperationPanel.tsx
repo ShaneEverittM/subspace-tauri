@@ -21,10 +21,11 @@ type OutputRowProps = {
     row: Array<number>
 }
 
-let opToFuncObj = {
+
+let opToFunc: Record<OperatorType, string> = {
     plus: 'add_f64',
     minus: 'sub_f64',
-    divide: 'div_f64'
+    divide: 'div_f64',
 };
 
 function OperationPanel({operator, rightValues, leftValues, dimension}: OperationPanelProps) {
@@ -37,9 +38,8 @@ function OperationPanel({operator, rightValues, leftValues, dimension}: Operatio
         let maybeArgs = packArguments(leftValues, rightValues);
 
         if (maybeArgs.ok) {
-            console.log(`invoking ${ opToFuncObj[operator] }`);
             // index is safe because typescript is really neat :^)
-            invoke<Matrix<number>>(opToFuncObj[operator], maybeArgs.unwrap())
+            invoke<Matrix<number>>(opToFunc[operator], maybeArgs.unwrap())
                 .then((res) => {
                     console.log(`result: ${ res.elements }`);
                     setResult(res);

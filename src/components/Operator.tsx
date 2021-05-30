@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Box } from '@material-ui/core';
 
-export type OperatorType = 'plus' | 'minus' | 'divide'
+export const operators = ['plus', 'minus', 'divide'] as const;
+export type OperatorType = typeof operators[number];
 
 type OperatorProps = {
     operator: OperatorType
