@@ -1,15 +1,16 @@
 import React, { SetStateAction, useState } from 'react';
 
 import { Box, Button, Container, Grid } from '@material-ui/core';
-import { handleError, Matrix, Maybe, range } from '../utils';
+import { handleError, Matrix, packArguments, range } from '../utils';
 import { OperatorType } from './Operator';
 import { invoke } from '@tauri-apps/api/tauri';
+import { Option } from 'ts-results';
 
 
 type OperationPanelProps = {
     operator: OperatorType
-    rightValues: Array<Array<Maybe<number>>>
-    leftValues: Array<Array<Maybe<number>>>
+    rightValues: Array<Array<Option<number>>>
+    leftValues: Array<Array<Option<number>>>
     setOperator: React.Dispatch<SetStateAction<OperatorType>>
     dimension: number
 }
@@ -20,37 +21,34 @@ type OutputRowProps = {
     row: Array<number>
 }
 
+let opToFuncObj = {
+    plus: 'add_f64',
+    minus: 'sub_f64',
+    divide: 'div_f64'
+};
+
 function OperationPanel({operator, rightValues, leftValues, dimension}: OperationPanelProps) {
     const [result, setResult] = useState(new Matrix<number>([]));
     const [validResult, setValidResult] = useState(false);
 
+    const setValidResultTrue = () => setValidResult(true);
+
     const submit = () => {
-        if (!rightValues.flat().every(e => e)) {
-            // error
-            console.log('Must fill every cell');
-            return;
-        }
+        let maybeArgs = packArguments(leftValues, rightValues);
 
-        if (!leftValues.flat().every(e => e)) {
-            // error
-            console.log('Must fill every cell');
-            return;
-        }
-
-        switch (operator) {
-            case 'plus':
-                invoke<Matrix<number>>('add', {
-                    m1: new Matrix(leftValues),
-                    m2: new Matrix(rightValues)
+        if (maybeArgs.ok) {
+            console.log(`invoking ${ opToFuncObj[operator] }`);
+            // index is safe because typescript is really neat :^)
+            invoke<Matrix<number>>(opToFuncObj[operator], maybeArgs.unwrap())
+                .then((res) => {
+                    console.log(`result: ${ res.elements }`);
+                    setResult(res);
                 })
-                    .then(setResult)
-                    .then(() => setValidResult(true))
-                    .catch(handleError);
-                break;
-            case 'minus':
-                break;
-            case 'divide':
-                break;
+                .then(setValidResultTrue)
+                .catch(handleError);
+        } else {
+            console.log(maybeArgs.val);
+            return;
         }
     };
 

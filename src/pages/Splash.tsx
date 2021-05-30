@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 
-import { handleError, Vec2d } from '../utils';
+import { Array2d, handleError } from '../utils';
 
 import { Container, Typography } from '@material-ui/core';
 
@@ -9,7 +9,7 @@ function Splash() {
     let [sum, setSum] = useState(new Array<Array<number>>());
 
     useEffect(() => {
-        invoke<Vec2d<number>>('add', {v1: [[1, 2], [3, 4]], v2: [[1, 2], [3, 4]]})
+        invoke<Array2d<number>>('add', {v1: [[1, 2], [3, 4]], v2: [[1, 2], [3, 4]]})
             .then(setSum)
             .catch(handleError);
     }, []);

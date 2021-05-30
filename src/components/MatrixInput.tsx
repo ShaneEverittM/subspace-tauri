@@ -1,9 +1,10 @@
 import React, { ChangeEvent } from 'react';
 
-import { isNumber, Maybe, range } from '../utils';
+import { isNumber, range } from '../utils';
 import { Action } from '../pages/BinaryCalculator';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { None, Option, Some } from 'ts-results';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,8 +29,8 @@ type MatrixRowProps = {
 
 type MatrixInputProps = {
     dimension: number
-    values: Array<Array<Maybe<number>>>
-    setValue: React.Dispatch<Action<Maybe<number>>>
+    values: Array<Array<Option<number>>>
+    setValue: React.Dispatch<Action<Option<number>>>
 }
 
 function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
@@ -40,14 +41,14 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
 
         // If user entered an invalid string, or emptied the TextField
         if (isNumber(valueStr)) {
-            setValue({row, col, newVal: Number(valueStr)});
+            setValue({row, col, newVal: Some(Number(valueStr))});
         } else {
             // Not valid number, could be due to bad input, or just an empty string
             let curVal = values[row][col];
             if (e.target.value === '') {
                 // If input was emtpy, clear screen and state
                 e.target.value = '';
-                setValue({row, col, newVal: undefined});
+                setValue({row, col, newVal: None});
             } else if (curVal) {
                 // If there is a value and the last input wasn't nothing, maintain last valid state on screen
                 e.target.value = curVal.toString();
@@ -70,7 +71,7 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
                             required
                             variant='outlined'
                             size='small'
-                            value={ values[row][col] }
+                            value={ values[row][col] === None ? undefined : values[row][col] }
                             onChange={ handleInput(row, col) }
                         />
                     </Grid>);

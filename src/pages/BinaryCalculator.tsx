@@ -3,8 +3,9 @@ import React, { useReducer, useState } from 'react';
 import { MatrixInput, OperationPanel, OperatorSymbol } from '../components';
 
 import { Box, Container } from '@material-ui/core';
-import { make2d, Maybe, Vec2d } from '../utils';
 import { OperatorType } from '../components/Operator';
+import { Array2d, make2d } from '../utils';
+import { None, Option } from 'ts-results';
 
 
 type BinaryCalculatorProps = {
@@ -23,8 +24,8 @@ export type Action<T> = { row: number, col: number, newVal: T }
  *
  * @typeParam The type of the element of the Matrix being edited.
  */
-function makeReducer<T>(): (previous: Vec2d<T>, action: Action<T>) => Vec2d<T> {
-    return function (previous: Vec2d<T>, action: Action<T>): Vec2d<T> {
+function makeReducer<T>(): (previous: Array2d<T>, action: Action<T>) => Array2d<T> {
+    return function (previous: Array2d<T>, action: Action<T>): Array2d<T> {
         const {row, col, newVal} = action;
         previous[row][col] = newVal;
         return previous;
@@ -35,13 +36,13 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
 
     // Initialize states of left and right matrices
     const [leftValues, setLetValue] = useReducer(
-        makeReducer<Maybe<number>>(),
-        make2d<Maybe<number>>(dimension, undefined)
+        makeReducer<Option<number>>(),
+        make2d<Option<number>>(dimension, None)
     );
 
     const [rightValues, setRightValue] = useReducer(
-        makeReducer<Maybe<number>>(),
-        make2d<Maybe<number>>(dimension, undefined)
+        makeReducer<Option<number>>(),
+        make2d<Option<number>>(dimension, None)
     );
 
     const [operator, setOperator] = useState('plus' as OperatorType);
