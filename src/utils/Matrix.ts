@@ -1,4 +1,7 @@
 import { Err, Ok, Option, Result } from 'ts-results';
+import { invoke } from '@tauri-apps/api/tauri';
+import { handleError } from './Error';
+import { OperatorType } from '../components/Operator';
 
 /**
  * Helper for creating a two dimensional `Array<Array<T>>` with a given value for all elements.
@@ -36,7 +39,7 @@ export class Matrix<T> {
  * @param left The values for the left matrix
  * @param right The values for the right matrix
  */
-export function packArguments(left: Array<Array<Option<number>>>, right: Array<Array<Option<number>>>):
+export function packBinaryArguments(left: Array<Array<Option<number>>>, right: Array<Array<Option<number>>>):
     Result<{ m1: Matrix<number>, m2: Matrix<number> }, 'invalid input'> {
 
     let m1: Matrix<number>;
@@ -55,4 +58,40 @@ export function packArguments(left: Array<Array<Option<number>>>, right: Array<A
     }
 
     return Ok({m1, m2});
+}
+
+export function packScalarArguments(left: Array<Array<Option<number>>>, right: Option<number>):
+    Result<{ m: Matrix<number>, x: number }, 'invalid input'> {
+
+    let m: Matrix<number>;
+    let x: number;
+
+    if (left.flat().every(e => e.some)) {
+        m = new Matrix(left.map(row => row.map(e => e.unwrap())));
+    } else {
+        return Err('invalid input');
+    }
+
+    if (right.some) {
+        x = right.unwrap();
+    } else {
+        return Err('invalid input');
+    }
+
+    return Ok({m, x});
+}
+
+export function dispatchByOp(
+    operator: OperatorType,
+    opToFunc: Record<OperatorType, string>,
+    args: any,
+    callBack: (res: Matrix<number>) => void,
+) {
+    // index is safe because typescript is really neat :^)
+    invoke<Matrix<number>>(opToFunc[operator], args)
+        .then((res) => {
+            console.log(`result: ${ res.elements }`);
+            callBack(res);
+        })
+        .catch(handleError);
 }

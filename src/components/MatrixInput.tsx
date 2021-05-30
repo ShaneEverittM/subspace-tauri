@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react';
 
-import { isNumber, range } from '../utils';
-import { Action } from '../pages/BinaryCalculator';
+import { Action, isNumber, range } from '../utils';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 import { None, Option, Some } from 'ts-results';
@@ -49,9 +48,9 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
                 // If input was emtpy, clear screen and state
                 e.target.value = '';
                 setValue({row, col, newVal: None});
-            } else if (curVal) {
+            } else if (curVal.some) {
                 // If there is a value and the last input wasn't nothing, maintain last valid state on screen
-                e.target.value = curVal.toString();
+                e.target.value = curVal.unwrap().toString();
             } else {
                 // If we had no value and user entered bad input, keep it empty
                 e.target.value = '';
@@ -71,7 +70,7 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
                             required
                             variant='outlined'
                             size='small'
-                            value={ values[row][col] === None ? undefined : values[row][col] }
+                            value={ values[row][col].unwrapOr(undefined) }
                             onChange={ handleInput(row, col) }
                         />
                     </Grid>);

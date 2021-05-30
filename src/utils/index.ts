@@ -1,5 +1,6 @@
 export * from './Error';
 export * from './Matrix';
+export * from './Reducer';
 
 
 /**

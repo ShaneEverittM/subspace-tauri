@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
 
-import { BinaryOperationPanel, MatrixInput, OperatorSymbol } from '../components';
+import { MatrixInput, OperatorSymbol, ScalarInput, ScalarOperationPanel } from '../components';
 
 import { Box, Container } from '@material-ui/core';
 import { OperatorType } from '../components/Operator';
@@ -12,7 +12,6 @@ type BinaryCalculatorProps = {
     dimension: number
 }
 
-
 function BinaryCalculator({dimension}: BinaryCalculatorProps) {
 
     // Initialize states of left and right matrices
@@ -21,10 +20,7 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
         make2d<Option<number>>(dimension, None)
     );
 
-    const [rightValues, setRightValue] = useReducer(
-        makeReducer<Option<number>>(),
-        make2d<Option<number>>(dimension, None)
-    );
+    const [rightValue, setRightValue] = useState(None as Option<number>);
 
     const [operator, setOperator] = useState('plus' as OperatorType);
 
@@ -37,13 +33,13 @@ function BinaryCalculator({dimension}: BinaryCalculatorProps) {
 
                 <OperatorSymbol operator={ operator }/>
 
-                { /* Right matrix */ }
-                <MatrixInput dimension={ dimension } values={ rightValues } setValue={ setRightValue }
-                />
+                { /* Scalar */ }
+                <ScalarInput value={ rightValue } setValue={ setRightValue }/>
+
             </Box>
 
             { /* Operations that can be applied to either or both */ }
-            <BinaryOperationPanel operator={ operator } rightValues={ rightValues } leftValues={ leftValues }
+            <ScalarOperationPanel operator={ operator } rightValue={ rightValue } leftValues={ leftValues }
                                   setOperator={ setOperator } dimension={ dimension }/>
         </Container>
     );

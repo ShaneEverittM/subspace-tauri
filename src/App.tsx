@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
 
-import { ArithmeticCalculator, Splash } from './pages';
+import { BinaryCalculator, ScalarCalculator, Splash } from './pages';
 import { TemporaryDrawer } from './components';
 
 import {
@@ -22,17 +22,21 @@ import { Functions, Home, Settings } from '@material-ui/icons';
 const drawerItems = () => (
     <>
         { /* Items within the top section of the drawer */ }
-        <List>
-            <ListItem button key='Home' component={ Link } to='/'>
-                <ListItemIcon><Home/></ListItemIcon>
-                <ListItemText primary='Home'/>
-            </ListItem>
-            <ListItem button key='Calculator' component={ Link } to='/calculator'>
-                <ListItemIcon><Functions/></ListItemIcon>
-                <ListItemText primary='Calculator'/>
-            </ListItem>
-        </List>
-        <Divider/>
+            <List>
+                <ListItem button key='Home' component={ Link } to='/'>
+                    <ListItemIcon><Home/></ListItemIcon>
+                    <ListItemText primary='Home'/>
+                </ListItem>
+                <ListItem button key='Matrix-to-Matrix Calculator' component={ Link } to='/mtmcalculator'>
+                    <ListItemIcon><Functions/></ListItemIcon>
+                    <ListItemText primary='Matrix-to-Matrix Calculator'/>
+                </ListItem>
+                <ListItem button key='Matrix-to-Scalar Calculator' component={ Link } to='/mtscalculator'>
+                    <ListItemIcon><Functions/></ListItemIcon>
+                    <ListItemText primary='Matrix-to-Scalar Calculator'/>
+                </ListItem>
+            </List>
+            <Divider/>
         { /* Items within the bottom section of the drawer */ }
         <List>
             <ListItem button key='Settings'>
@@ -61,7 +65,8 @@ function App() {
                 </Container>
                 <Container>
                     <Route exact path='/' component={ Splash }/>
-                    <Route path='/calculator' component={ () => (<ArithmeticCalculator dimension={ 3 }/>) }/>
+                    <Route path='/mtmcalculator' component={ () => (<BinaryCalculator dimension={ 3 }/>) }/>
+                    <Route path='/mtscalculator' component={ () => (<ScalarCalculator dimension={ 3 }/>) }/>
                 </Container>
             </HashRouter>
         </ThemeProvider>
