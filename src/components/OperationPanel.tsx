@@ -12,7 +12,7 @@ import { OutputRow } from '../components';
 // type ScalarPacker = (left: Option<number>[][], right: Option<number>)
 //     => Result<{ m: Matrix<number>, x: number }, 'invalid input'>;
 
-type OperationPanelProps = {
+export type OperationPanelProps = {
     scalar: boolean,
     operator: OperatorType
     validOperators: OperatorType[]

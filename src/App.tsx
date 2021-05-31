@@ -17,25 +17,28 @@ import {
 } from '@material-ui/core';
 import { Functions, Home, Settings } from '@material-ui/icons';
 
+const MatrixToMatrixPath = 'matrix-to-matrix-path';
+const MatrixToScalarPath = 'matrix-to-scalar-path';
+
 
 // Returns a list of items to render in the drawer
 const drawerItems = () => (
     <>
         { /* Items within the top section of the drawer */ }
-            <List>
-                <ListItem button key='Home' component={ Link } to='/'>
-                    <ListItemIcon><Home/></ListItemIcon>
-                    <ListItemText primary='Home'/>
-                </ListItem>
-                <ListItem button key='Matrix-to-Matrix Calculator' component={ Link } to='/mtmcalculator'>
-                    <ListItemIcon><Functions/></ListItemIcon>
-                    <ListItemText primary='Matrix-to-Matrix Calculator'/>
-                </ListItem>
-                <ListItem button key='Matrix-to-Scalar Calculator' component={ Link } to='/mtscalculator'>
-                    <ListItemIcon><Functions/></ListItemIcon>
-                    <ListItemText primary='Matrix-to-Scalar Calculator'/>
-                </ListItem>
-            </List>
+        <List>
+            <ListItem button key='Home' component={ Link } to='/'>
+                <ListItemIcon><Home/></ListItemIcon>
+                <ListItemText primary='Home'/>
+            </ListItem>
+            <ListItem button key='Matrix-to-Matrix Calculator' component={ Link } to={ MatrixToMatrixPath }>
+                <ListItemIcon><Functions/></ListItemIcon>
+                <ListItemText primary='Matrix-to-Matrix Calculator'/>
+            </ListItem>
+            <ListItem button key='Matrix-to-Scalar Calculator' component={ Link } to={ MatrixToScalarPath }>
+                <ListItemIcon><Functions/></ListItemIcon>
+                <ListItemText primary='Matrix-to-Scalar Calculator'/>
+            </ListItem>
+        </List>
         <Divider/>
         { /* Items within the bottom section of the drawer */ }
         <List>
@@ -65,10 +68,11 @@ function App() {
                 </Container>
                 <Container>
                     <Route exact path='/' component={ Splash }/>
-                    <Route path='/mtmcalculator' component={ () => (
-                        <Calculator scalar={ false } operators={ ['multiply', 'plus', 'minus'] } dimension={ 3 }/>) }/>
-                    <Route path='/mtscalculator' component={ () => (
-                        <Calculator scalar={ true } operators={ ['multiply', 'divide', 'plus', 'minus'] }
+                    <Route path={ MatrixToMatrixPath } component={ () => (
+                        <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }
+                                    dimension={ 3 }/>) }/>
+                    <Route path={ MatrixToScalarPath } component={ () => (
+                        <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }
                                     dimension={ 3 }/>) }/>
                 </Container>
             </HashRouter>
