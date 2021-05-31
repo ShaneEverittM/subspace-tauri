@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(1),
             textAlign: 'center',
             color: theme.palette.text.secondary,
-            maxWidth: '50%'
+            maxWidth: 100
         },
     }),
 );

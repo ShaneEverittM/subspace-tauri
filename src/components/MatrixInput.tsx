@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react';
 
 import { Action, Cell, isNumber, range } from '../utils';
 
-import { Box, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 import { None, Some } from 'ts-results';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -79,13 +79,15 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
     }
 
     return (
-        <Grid justify='center' container spacing={ 1 }>
-            { range(dimension).map((row) => (
-                <Grid justify='center' key={ row + 1 } container item spacing={ 1 } wrap='nowrap'>
-                    <FormRow dimension={ dimension } row={ row }/>
-                </Grid>
-            )) }
-        </Grid>
+        <Container>
+            <Grid justify='center' container spacing={ 1 }>
+                { range(dimension).map((row) => (
+                    <Grid justify='center' key={ row + 1 } container item spacing={ 1 } wrap='nowrap'>
+                        <FormRow dimension={ dimension } row={ row }/>
+                    </Grid>
+                )) }
+            </Grid>
+        </Container>
     );
 
 }
