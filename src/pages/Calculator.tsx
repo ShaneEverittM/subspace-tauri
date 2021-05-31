@@ -1,6 +1,14 @@
 import { OperatorType } from '../components/Operator';
 import React, { useReducer, useState } from 'react';
-import { Action, make2d, makeReducer, packBinaryArguments, packScalarArguments } from '../utils';
+import {
+    Either,
+    make2d,
+    makeReducer,
+    MatrixType,
+    packBinaryArguments,
+    packScalarArguments,
+    ScalarType
+} from '../utils';
 import { None, Option } from 'ts-results';
 import { Box, Container } from '@material-ui/core';
 import { MatrixInput, OperationPanel, OperatorSymbol, ScalarInput } from '../components';
@@ -11,88 +19,70 @@ type CalculatorProps = {
     scalar: boolean
 }
 
-type ScalarType = {
-    type: 'scalar'
-    value: Option<number>
-    setter: React.Dispatch<React.SetStateAction<Option<number>>>
-}
-
-type MatrixType = {
-    type: 'matrix'
-    value: Option<number>[][]
-    setter: React.Dispatch<Action<Option<number>>>
-}
-
-
-export type StateType = MatrixType | ScalarType;
-
-
-function Calculator(props: CalculatorProps) {
-    const {validOperators, scalar} = props;
-
+function Calculator({validOperators, scalar}: CalculatorProps) {
+    // Set default dimension to 3
     const [dimension, setDimension] = useState(3);
 
-    const packingFunction = scalar ? packScalarArguments : packBinaryArguments;
-
-    const [left, leftUpdater] = useReducer(
+    // Left side is always a matrix, initialize its values
+    const [left, updateLeft] = useReducer(
         makeReducer<Option<number>>(),
         make2d<Option<number>>(dimension, None)
     );
 
+    // Default operator is 'plus'
     const [operator, setOperator] = useState('plus' as OperatorType);
 
-    // Initialize both state types, one will stay unchanged from initial and unused
-    const [rightScalar, rightScalarUpdater] = useState<Option<number>>(None);
-    const [rightMatrix, rightMatrixUpdater] = useReducer(
+    // Initialize both state for both matrix and scalar, one will stay unchanged from initial and unused.
+    // This is because hook must be top level, so conditional initialization is difficult.
+    const [rightScalar, updateRightScalar] = useState<Option<number>>(None);
+    const [rightMatrix, updateRightMatrix] = useReducer(
         makeReducer<Option<number>>(),
         make2d<Option<number>>(dimension, None)
     );
 
-    const getRightState = (): StateType => {
-        if (scalar) {
-            return {type: 'scalar', value: rightScalar, setter: rightScalarUpdater};
-        } else {
-            return {type: 'matrix', value: rightMatrix, setter: rightMatrixUpdater};
-        }
-    };
+    // Set right handler based of desired right operand
+    let rightHandler: Either<MatrixType, ScalarType> = scalar ?
+        {type: 'scalar', value: rightScalar, setter: updateRightScalar} :
+        {type: 'matrix', value: rightMatrix, setter: updateRightMatrix};
 
-    let right: StateType = getRightState();
+    // Set function used to pack argument for rust API based on operands
+    const packingFunction = scalar ? packScalarArguments : packBinaryArguments;
 
+    // Used for conditional rendering based on operands
     const getRight = () => {
-        if (right.type === 'scalar') {
-            return <ScalarInput value={ right.value } setValue={ right.setter }/>;
+        if (rightHandler.type === 'scalar') {
+            return <ScalarInput value={ rightHandler.value } setValue={ rightHandler.setter }/>;
         } else {
-            return <MatrixInput dimension={ dimension } values={ right.value } setValue={ right.setter }/>;
+            return <MatrixInput dimension={ dimension } values={ rightHandler.value }
+                                setValue={ rightHandler.setter }/>;
         }
     };
 
 
+    // Extracting props out of JSX for cleanliness
     const operationPanelProps: OperationPanelProps = {
         scalar,
         operator,
         validOperators,
-        right: right.value,
-        left,
+        leftMatrixValues: left,
         setOperator,
         dimension,
         packingFunction,
         setDimension,
-        leftUpdater,
-        rightUpdater: right
+        updateLeftMatrix: updateLeft,
+        right: rightHandler
     };
 
     return (
         <Container>
             <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} }>
                 { /* Left matrix */ }
-                <MatrixInput dimension={ dimension } values={ left } setValue={ leftUpdater }/>
+                <MatrixInput dimension={ dimension } values={ left } setValue={ updateLeft }/>
 
                 <OperatorSymbol operator={ operator }/>
 
-                { /* Scalar */ }
+                { /* Scalar or Matrix */ }
                 { getRight() }
-
-
             </Box>
 
             { /* Operations that can be applied to both */ }

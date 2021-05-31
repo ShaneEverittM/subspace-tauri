@@ -1,24 +1,32 @@
 import React, { SetStateAction, useState } from 'react';
 
 import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
-import { Action, dispatchByOp, Matrix, range } from '../utils';
+import { Action, Cell, dispatchByOp, Either, Matrix, MatrixType, range, ScalarType } from '../utils';
 import { getSymbol, OperatorType } from './Operator';
-import { None, Option } from 'ts-results';
+import { None } from 'ts-results';
 import { OutputRow } from '../components';
-import { StateType } from '../pages/Calculator';
 
 
 export type OperationPanelProps = {
+    /// If the operation is between a matrix and a scalar
     scalar: boolean,
+    /// The operator
     operator: OperatorType
-    validOperators: OperatorType[]
-    right: Option<number>[][] | Option<number>
-    rightUpdater: StateType
-    left: Option<number>[][]
-    leftUpdater: React.Dispatch<Action<Option<number>>>
+    /// Updater dispatch for the operator
     setOperator: React.Dispatch<SetStateAction<OperatorType>>
+    /// Valid operators that can be selected
+    validOperators: OperatorType[]
+    /// An object for interfacing with the right operand, be it a matrix or scalar
+    right: Either<MatrixType, ScalarType>
+    /// The values in the left matrix
+    leftMatrixValues: Cell[][]
+    /// Updater dispatch for an index in the left matrix
+    updateLeftMatrix: React.Dispatch<Action<Cell>>
+    /// Function used to transform the states into argument for the Tauri API
     packingFunction: (a: any, b: any) => any,
+    /// The current dimension
     dimension: number
+    /// Updater dispatch for the dimension
     setDimension: React.Dispatch<SetStateAction<number>>
 }
 
@@ -45,9 +53,8 @@ function OperationPanel(props: OperationPanelProps) {
         validOperators,
         setOperator,
         right,
-        rightUpdater,
-        left,
-        leftUpdater,
+        leftMatrixValues,
+        updateLeftMatrix,
         dimension,
         setDimension,
         packingFunction
@@ -67,7 +74,7 @@ function OperationPanel(props: OperationPanelProps) {
     };
 
     const submit = () => {
-        let maybeArgs = packingFunction(left, right);
+        let maybeArgs = packingFunction(leftMatrixValues, right.value);
 
         const callBack = (res: Matrix<number>) => {
             setResult(res);
@@ -86,6 +93,25 @@ function OperationPanel(props: OperationPanelProps) {
         setOperator(operator);
     };
 
+    const handleKeyEvent = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter') {
+            // Always update left matrix's internal size
+            updateLeftMatrix({type: 'extend', newSize: localDimension, filler: None});
+
+            // if right value is a matrix, update it's internal size
+            if (right.type === 'matrix') {
+                right.setter({type: 'extend', newSize: localDimension, filler: None});
+            }
+
+            // Invalidate result, since its new dimension would break it
+            // TODO: Should this be handled better?
+            setValidResult(false);
+
+            // Update dimension
+            setDimension(localDimension);
+        }
+    };
+
 
     return (
         <Container>
@@ -98,24 +124,15 @@ function OperationPanel(props: OperationPanelProps) {
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
                 <TextField
-                    // className={ classes.textField }
                     required
                     variant='outlined'
                     size='small'
                     type='number'
                     value={ localDimension }
-                    onChange={ (e) => {
+                    onChange={ (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
                         setLocalDimension(Number(e.target.value));
                     } }
-                    onKeyPress={ (e) => {
-                        if (e.key === 'Enter') {
-                            leftUpdater({type: 'extend', newSize: localDimension, filler: None});
-                            if (rightUpdater.type === 'matrix') {
-                                rightUpdater.setter({type: 'extend', newSize: localDimension, filler: None});
-                            }
-                            setDimension(localDimension);
-                        }
-                    } }
+                    onKeyPress={ handleKeyEvent }
                 />
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>

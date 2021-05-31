@@ -1,9 +1,9 @@
 import React, { ChangeEvent } from 'react';
 
-import { Action, isNumber, range } from '../utils';
+import { Action, Cell, isNumber, range } from '../utils';
 
 import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
-import { None, Option, Some } from 'ts-results';
+import { None, Some } from 'ts-results';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,8 +28,8 @@ type MatrixRowProps = {
 
 type MatrixInputProps = {
     dimension: number
-    values: Array<Array<Option<number>>>
-    setValue: React.Dispatch<Action<Option<number>>>
+    values: Array<Array<Cell>>
+    setValue: React.Dispatch<Action<Cell>>
 }
 
 function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
@@ -37,13 +37,10 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
             let valueStr = e.target.value;
-            // console.log(`got ${ valueStr }`);
 
             // If user entered an invalid string, or emptied the TextField
             if (isNumber(valueStr)) {
-                // console.log(`setting ${ valueStr }`);
                 setValue({type: 'cell-update', row, col, newVal: Some(Number(valueStr))});
-                // console.log(values)
             } else {
                 // Not valid number, could be due to bad input, or just an empty string
                 let curVal = values[row][col];

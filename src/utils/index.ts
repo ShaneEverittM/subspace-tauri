@@ -23,3 +23,6 @@ function isNaNaN(number: number): boolean {
 export function isNumber(value: string | number): boolean {
     return (value != null) && (value !== '') && isNaNaN(Number(value.toString()));
 }
+
+
+export type Either<A, B> = A | B;

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, SetStateAction } from 'react';
 import { Box, Container, createStyles, makeStyles, TextField, Theme } from '@material-ui/core';
 import { None, Option, Some } from 'ts-results';
-import { isNumber } from '../utils';
+import { Cell, isNumber } from '../utils';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type ScalarInputProps = {
     value: Option<number>,
-    setValue: React.Dispatch<SetStateAction<Option<number>>>
+    setValue: React.Dispatch<SetStateAction<Cell>>
 }
 
 function ScalarInput({value, setValue}: ScalarInputProps) {

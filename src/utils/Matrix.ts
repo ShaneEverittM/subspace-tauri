@@ -2,6 +2,8 @@ import { Err, Ok, Option, Result } from 'ts-results';
 import { invoke } from '@tauri-apps/api/tauri';
 import { handleError } from './Error';
 import { OperatorType } from '../components/Operator';
+import React from 'react';
+import { Action } from './Reducer';
 
 /**
  * Helper for creating a two dimensional `Array<Array<T>>` with a given value for all elements.
@@ -18,6 +20,8 @@ export function make2d<T>(size: number, init?: T): Array2d<T> {
         return [...Array(size)].map((_) => Array<T>(size));
     }
 }
+
+export type Cell = Option<number>;
 
 export type Array2d<T> = Array<Array<T>>
 
@@ -39,7 +43,7 @@ export class Matrix<T> {
  * @param left The values for the left matrix
  * @param right The values for the right matrix
  */
-export function packBinaryArguments(left: Array<Array<Option<number>>>, right: Array<Array<Option<number>>>):
+export function packBinaryArguments(left: Array2d<Cell>, right: Array2d<Cell>):
     Result<{ m1: Matrix<number>, m2: Matrix<number> }, 'invalid input'> {
 
     let m1: Matrix<number>;
@@ -60,7 +64,7 @@ export function packBinaryArguments(left: Array<Array<Option<number>>>, right: A
     return Ok({m1, m2});
 }
 
-export function packScalarArguments(left: Array<Array<Option<number>>>, right: Option<number>):
+export function packScalarArguments(left: Array2d<Cell>, right: Cell):
     Result<{ m: Matrix<number>, x: number }, 'invalid input'> {
 
     let m: Matrix<number>;
@@ -93,4 +97,15 @@ export function dispatchByOp(
             callBack(res);
         })
         .catch(handleError);
+}
+
+export type ScalarType = {
+    type: 'scalar'
+    value: Cell
+    setter: React.Dispatch<React.SetStateAction<Cell>>
+}
+export type MatrixType = {
+    type: 'matrix'
+    value: Cell[][]
+    setter: React.Dispatch<Action<Cell>>
 }
