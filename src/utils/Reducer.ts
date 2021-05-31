@@ -1,7 +1,7 @@
 import { Array2d, make2d } from './Matrix';
 
 
-export type ExtendAction<T> = { type: 'extend', newSize: number, filler: T }
+export type ResizeAction<T> = { type: 'resize', newSize: number, filler: T }
 
 /**
  * Represents the action applied to matrices held in state.
@@ -10,7 +10,7 @@ export type ExtendAction<T> = { type: 'extend', newSize: number, filler: T }
  */
 export type CellUpdateAction<T> = { type: 'cell-update', row: number, col: number, newVal: T }
 
-export type Action<T> = ExtendAction<T> | CellUpdateAction<T>
+export type Action<T> = ResizeAction<T> | CellUpdateAction<T>
 
 /**
  * Creates a specialized reducer function for `useReducer`.

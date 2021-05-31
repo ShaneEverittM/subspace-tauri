@@ -1,10 +1,11 @@
 import React, { SetStateAction, useState } from 'react';
 
-import { Box, Button, Container, Grid, TextField } from '@material-ui/core';
+import { Box, Button, Container, Grid } from '@material-ui/core';
 import { Action, Cell, dispatchByOp, Either, Matrix, MatrixType, range, ScalarType } from '../utils';
 import { getSymbol, OperatorType } from './Operator';
 import { None } from 'ts-results';
-import { OutputRow } from '../components';
+import { ButtonPair, OutputRow } from '../components';
+import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 
 export type OperationPanelProps = {
@@ -62,7 +63,6 @@ function OperationPanel(props: OperationPanelProps) {
 
     const [result, setResult] = useState(new Matrix<number>([]));
     const [validResult, setValidResult] = useState(false);
-    const [localDimension, setLocalDimension] = useState(dimension);
 
 
     const getOperator = (op: OperatorType): string => {
@@ -93,23 +93,25 @@ function OperationPanel(props: OperationPanelProps) {
         setOperator(operator);
     };
 
-    const handleKeyEvent = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        if (e.key === 'Enter') {
-            // Always update left matrix's internal size
-            updateLeftMatrix({type: 'extend', newSize: localDimension, filler: None});
+    const bumpDimension = (direction: 'up' | 'down') => () => {
+        let newDimension;
 
-            // if right value is a matrix, update it's internal size
-            if (right.type === 'matrix') {
-                right.setter({type: 'extend', newSize: localDimension, filler: None});
-            }
-
-            // Invalidate result, since its new dimension would break it
-            // TODO: Should this be handled better?
-            setValidResult(false);
-
-            // Update dimension
-            setDimension(localDimension);
+        if (direction === 'up') {
+            newDimension = dimension + 1;
+        } else if (dimension !== 1) {
+            newDimension = dimension - 1;
+        } else {
+            return;
         }
+
+        updateLeftMatrix({type: 'resize', newSize: newDimension, filler: None});
+
+        if (right.type === 'matrix') {
+            right.setter({type: 'resize', newSize: newDimension, filler: None});
+        }
+
+        setValidResult(false);
+        setDimension(newDimension);
     };
 
 
@@ -123,17 +125,8 @@ function OperationPanel(props: OperationPanelProps) {
                 }) }
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                <TextField
-                    required
-                    variant='outlined'
-                    size='small'
-                    type='number'
-                    value={ localDimension }
-                    onChange={ (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-                        setLocalDimension(Number(e.target.value));
-                    } }
-                    onKeyPress={ handleKeyEvent }
-                />
+                <ButtonPair Left={ ExpandMore } onLeft={ bumpDimension('down') } Right={ ExpandLess }
+                            onRight={ bumpDimension('up') }/>
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
                 <Button variant='contained' onClick={ submit }>Calculate</Button>
