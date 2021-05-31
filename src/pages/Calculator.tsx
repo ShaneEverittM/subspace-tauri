@@ -7,7 +7,6 @@ import { MatrixInput, OperationPanel, OperatorSymbol, ScalarInput } from '../com
 import { OperationPanelProps } from '../components/OperationPanel';
 
 type CalculatorProps = {
-    dimension: number,
     validOperators: OperatorType[]
     scalar: boolean
 }
@@ -25,11 +24,13 @@ type MatrixType = {
 }
 
 
-type StateType = MatrixType | ScalarType;
+export type StateType = MatrixType | ScalarType;
 
 
 function Calculator(props: CalculatorProps) {
-    const {dimension, validOperators, scalar} = props;
+    const {validOperators, scalar} = props;
+
+    const [dimension, setDimension] = useState(3);
 
     const packingFunction = scalar ? packScalarArguments : packBinaryArguments;
 
@@ -74,7 +75,10 @@ function Calculator(props: CalculatorProps) {
         left,
         setOperator,
         dimension,
-        packingFunction
+        packingFunction,
+        setDimension,
+        leftUpdater,
+        rightUpdater: right
     };
 
     return (

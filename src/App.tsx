@@ -17,8 +17,8 @@ import {
 } from '@material-ui/core';
 import { Functions, Home, Settings } from '@material-ui/icons';
 
-const MatrixToMatrixPath = 'matrix-to-matrix-path';
-const MatrixToScalarPath = 'matrix-to-scalar-path';
+const MatrixToMatrixPath = '/matrix-to-matrix-calculator';
+const MatrixToScalarPath = '/matrix-to-scalar-calculator';
 
 
 // Returns a list of items to render in the drawer
@@ -69,11 +69,9 @@ function App() {
                 <Container>
                     <Route exact path='/' component={ Splash }/>
                     <Route path={ MatrixToMatrixPath } component={ () => (
-                        <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }
-                                    dimension={ 3 }/>) }/>
+                        <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }/>) }/>
                     <Route path={ MatrixToScalarPath } component={ () => (
-                        <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }
-                                    dimension={ 3 }/>) }/>
+                        <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }/>) }/>
                 </Container>
             </HashRouter>
         </ThemeProvider>
