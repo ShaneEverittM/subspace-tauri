@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
 type ButtonPairProps = {
     LeftComponent: SvgIconComponent,
     RightComponent: SvgIconComponent
-    onLeftButtonClick: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
-    onRightButtonClick: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
+    onLeftButtonClick: (e: MouseEvent<HTMLButtonElement>) => void,
+    onRightButtonClick: (e: MouseEvent<HTMLButtonElement>) => void,
 }
 
 function ButtonPair({LeftComponent, onLeftButtonClick, RightComponent, onRightButtonClick}: ButtonPairProps) {
