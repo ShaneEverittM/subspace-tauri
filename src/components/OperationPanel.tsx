@@ -5,7 +5,7 @@ import { Action, Cell, dispatchByOp, Either, Matrix, MatrixType, range, ScalarTy
 import { getSymbol, OperatorType } from './Operator';
 import { None } from 'ts-results';
 import { ButtonPair, OutputRow } from '../components';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { ExpandLess as UpArrow, ExpandMore as DownArrow } from '@material-ui/icons';
 
 
 export type OperationPanelProps = {
@@ -116,17 +116,17 @@ function OperationPanel(props: OperationPanelProps) {
 
 
     return (
-        <Container>
-            <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-around'} }>
+        <Container maxWidth={ false }>
+            <Box style={ {display: 'flex', flexDirection: 'column', justifyContent: 'space-between'} }>
                 { validOperators.map((o, i) => {
-                    return (<Box key={ i } style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                        <Button variant='contained' onClick={ changeOperator(o) }>{ getSymbol(o) }</Button>
+                    return (<Box key={ i } style={ {display: 'flex', justifyContent: 'center', padding: '5px'} }>
+                        < Button variant='contained' onClick={ changeOperator(o) }>{ getSymbol(o) }</Button>
                     </Box>);
                 }) }
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                <ButtonPair LeftComponent={ ExpandMore } onLeftButtonClick={ bumpDimension('down') }
-                            RightComponent={ ExpandLess }
+                <ButtonPair LeftComponent={ DownArrow } onLeftButtonClick={ bumpDimension('down') }
+                            RightComponent={ UpArrow }
                             onRightButtonClick={ bumpDimension('up') }/>
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>

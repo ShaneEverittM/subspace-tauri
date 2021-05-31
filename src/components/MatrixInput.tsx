@@ -2,22 +2,18 @@ import React, { ChangeEvent } from 'react';
 
 import { Action, Cell, isNumber, range } from '../utils';
 
-import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
 import { None, Some } from 'ts-results';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            flexGrow: 1,
-        },
         textField: {
             padding: theme.spacing(1),
             textAlign: 'center',
+            maxWidth: 100,
+            justifySelf: 'center',
             color: theme.palette.text.secondary,
         },
-        grid: {
-            justifyContent: 'center'
-        }
     }),
 );
 
@@ -65,15 +61,17 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
             <>
                 { range(dimension).map((col) => {
                     // Concatenate digits to form unique ID to appease React
-                    return (<Grid item key={ row + '' + col } xs={ 4 }>
-                        <TextField
-                            className={ classes.textField }
-                            required
-                            variant='outlined'
-                            size='small'
-                            value={ values[row][col].unwrapOr(undefined) }
-                            onChange={ handleInput(row, col) }
-                        />
+                    return (<Grid item key={ row + '' + col }>
+                        <Box style={ {display: 'flex', justifyContent: 'center'} }>
+                            <TextField
+                                className={ classes.textField }
+                                required
+                                variant='outlined'
+                                size='small'
+                                value={ values[row][col].unwrapOr(undefined) }
+                                onChange={ handleInput(row, col) }
+                            />
+                        </Box>
                     </Grid>);
                 }) }
             </>
@@ -81,19 +79,15 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
     }
 
     return (
-        <Container className={ classes.root }>
-            { /* 'clone' causes the underlying DOM node used by Box to just be the child node instead of a new div */ }
-            <Box justifyContent='center' clone>
-                <Grid container spacing={ 1 }>
-                    { range(dimension).map((row) => (
-                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <FormRow dimension={ dimension } row={ row }/>
-                        </Grid>
-                    )) }
+        <Grid justify='center' container spacing={ 1 }>
+            { range(dimension).map((row) => (
+                <Grid justify='center' key={ row + 1 } container item spacing={ 1 } wrap='nowrap'>
+                    <FormRow dimension={ dimension } row={ row }/>
                 </Grid>
-            </Box>
-        </Container>
+            )) }
+        </Grid>
     );
+
 }
 
 export default MatrixInput;
