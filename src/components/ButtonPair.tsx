@@ -18,20 +18,24 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 type ButtonPairProps = {
-    Left: SvgIconComponent,
-    Right: SvgIconComponent
-    onLeft: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
-    onRight: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
+    LeftComponent: SvgIconComponent,
+    RightComponent: SvgIconComponent
+    onLeftButtonClick: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
+    onRightButtonClick: (e: React.MouseEvent<HTMLAnchorElement> | React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-function ButtonPair({Left, onLeft, Right, onRight}: ButtonPairProps) {
+function ButtonPair({LeftComponent, onLeftButtonClick, RightComponent, onRightButtonClick}: ButtonPairProps) {
     const classes = useStyles();
 
     return (
         <div className={ classes.root }>
             <ButtonGroup color='primary' aria-label='outlined primary button group'>
-                <Button onClick={ onLeft }><Left/></Button>
-                <Button onClick={ onRight }><Right/></Button>
+                <Button onClick={ onLeftButtonClick }>
+                    <LeftComponent/>
+                </Button>
+                <Button onClick={ onRightButtonClick }>
+                    <RightComponent/>
+                </Button>
             </ButtonGroup>
 
         </div>

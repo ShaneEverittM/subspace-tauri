@@ -125,8 +125,9 @@ function OperationPanel(props: OperationPanelProps) {
                 }) }
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                <ButtonPair Left={ ExpandMore } onLeft={ bumpDimension('down') } Right={ ExpandLess }
-                            onRight={ bumpDimension('up') }/>
+                <ButtonPair LeftComponent={ ExpandMore } onLeftButtonClick={ bumpDimension('down') }
+                            RightComponent={ ExpandLess }
+                            onRightButtonClick={ bumpDimension('up') }/>
             </Box>
             <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
                 <Button variant='contained' onClick={ submit }>Calculate</Button>
