@@ -155,6 +155,7 @@ function OperationPanel(props: OperationPanelProps) {
         }
 
         setValidNumericResult(false);
+        setValidMatrixResult(false);
         setDimension(newDimension);
     };
 
