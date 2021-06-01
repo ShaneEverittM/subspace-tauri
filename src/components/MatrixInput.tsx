@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
         textField: {
             padding: theme.spacing(1),
             textAlign: 'center',
-            maxWidth: 100,
+            maxWidth: 125,
             justifySelf: 'center',
             color: theme.palette.text.secondary,
         },
