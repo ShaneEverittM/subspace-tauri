@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Link, Route } from 'react-router-dom';
 
-import { Calculator, Splash } from './pages';
+import { About, Calculator } from './pages';
 import { TemporaryDrawer } from './components';
 
 import {
@@ -14,10 +14,11 @@ import {
     ListItemText,
     ThemeProvider
 } from '@material-ui/core';
-import { Functions, Home, Settings } from '@material-ui/icons';
+import { Functions, Home } from '@material-ui/icons';
 
-const MatrixToMatrixPath = '/matrix-to-matrix-calculator';
+const MatrixToMatrixPath = '/';
 const MatrixToScalarPath = '/matrix-to-scalar-calculator';
+const AboutPath = '/about';
 
 
 // Returns a list of items to render in the drawer
@@ -25,10 +26,6 @@ const drawerItems = () => (
     <>
         { /* Items within the top section of the drawer */ }
         <List>
-            <ListItem button key='Home' component={ Link } to='/'>
-                <ListItemIcon><Home/></ListItemIcon>
-                <ListItemText primary='Home'/>
-            </ListItem>
             <ListItem button key='Matrix-to-Matrix Calculator' component={ Link } to={ MatrixToMatrixPath }>
                 <ListItemIcon><Functions/></ListItemIcon>
                 <ListItemText primary='Matrix-to-Matrix Calculator'/>
@@ -41,9 +38,9 @@ const drawerItems = () => (
         <Divider/>
         { /* Items within the bottom section of the drawer */ }
         <List>
-            <ListItem button key='Settings'>
-                <ListItemIcon><Settings/></ListItemIcon>
-                <ListItemText primary='Settings'/>
+            <ListItem button key='About' component={ Link } to={ AboutPath }>
+                <ListItemIcon><Home/></ListItemIcon>
+                <ListItemText primary='About'/>
             </ListItem>
         </List>
     </>
@@ -62,14 +59,12 @@ function App() {
             <CssBaseline/>
             { /* Multiple pages */ }
             <HashRouter>
-                {/*<Container style={ {padding: 'unset', display: 'flex', justifyContent: 'flex-start'} }>*/ }
                 <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
-                {/*</Container>*/ }
-                <Route exact path='/' component={ Splash }/>
-                <Route path={ MatrixToMatrixPath } component={ () => (
+                <Route exact path={ MatrixToMatrixPath } component={ () => (
                     <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }/>) }/>
                 <Route path={ MatrixToScalarPath } component={ () => (
                     <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }/>) }/>
+                <Route path={ AboutPath } component={ About }/>
             </HashRouter>
         </ThemeProvider>
     );
