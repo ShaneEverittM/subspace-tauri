@@ -23,22 +23,23 @@ type MatrixRowProps = {
 }
 
 type MatrixInputProps = {
+    style: React.CSSProperties,
     dimension: number
     values: Array<Array<Cell>>
     setValue: React.Dispatch<Action<Cell>>
 }
 
-function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
+function MatrixInput({dimension, values, setValue, style}: MatrixInputProps) {
     const classes = useStyles();
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-            let valueStr = e.target.value;
+        let valueStr = e.target.value;
 
-            // If user entered an invalid string, or emptied the TextField
-            if (isNumber(valueStr)) {
-                setValue({type: 'cell-update', row, col, newVal: Some(Number(valueStr))});
-            } else {
-                // Not valid number, could be due to bad input, or just an empty string
+        // If user entered an invalid string, or emptied the TextField
+        if (isNumber(valueStr)) {
+            setValue({type: 'cell-update', row, col, newVal: Some(Number(valueStr))});
+        } else {
+            // Not valid number, could be due to bad input, or just an empty string
                 let curVal = values[row][col];
                 if (e.target.value === '') {
                     // If input was emtpy, clear screen and state
@@ -79,7 +80,7 @@ function MatrixInput({dimension, values, setValue}: MatrixInputProps) {
     }
 
     return (
-        <Container>
+        <Container style={ style }>
             <Grid justify='center' container spacing={ 1 }>
                 { range(dimension).map((row) => (
                     <Grid justify='center' key={ row + 1 } container item spacing={ 1 } wrap='nowrap'>

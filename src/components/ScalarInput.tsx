@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
             maxWidth: 100
         },
         root: {
+            gridArea: 'right',
             display: 'flex',
             justifyContent: 'center'
         }

@@ -1,6 +1,6 @@
 import React, { SetStateAction, useState } from 'react';
 
-import { Box, Button, Container, Grid } from '@material-ui/core';
+import { Box, Button, Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 import {
     Action,
     ApiArguments,
@@ -11,12 +11,11 @@ import {
     Matrix,
     MatrixType,
     packArguments,
-    range,
     ScalarType
 } from '../utils';
 import { getSymbol, OperatorType } from './Operator';
 import { None } from 'ts-results';
-import { ButtonPair, OutputRow } from '../components';
+import { ButtonPair } from '../components';
 import { ExpandLess as UpArrow, ExpandMore as DownArrow } from '@material-ui/icons';
 
 
@@ -58,11 +57,12 @@ const opToBinaryFunc: Record<OperatorType, string> = {
 
 type UnaryOpsProps = {
     handler: (func: string) => () => void
+    style: React.CSSProperties,
 }
 
-function UnaryOps({handler}: UnaryOpsProps) {
+function UnaryOps({handler, style}: UnaryOpsProps) {
     return (
-        <Box style={ {display: 'flex', flexDirection: 'row', alignItems: 'center'} }>
+        <Box style={ {display: 'flex', flexDirection: 'row', alignItems: 'center', ...style} }>
             <Button style={ {margin: '2px'} } variant='contained' onClick={ handler('transpose_f64') }>
                 Transpose
             </Button>
@@ -195,12 +195,13 @@ function OperationPanel(props: OperationPanelProps) {
     const renderResult = () => {
         if (validMatrixResult) {
             return (
-                <Grid container spacing={ 1 }>
-                    { range(dimension).map((row) => (
-                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <OutputRow dimension={ dimension } rowNumber={ row } row={ matrixResult.elements[row] }/>
-                        </Grid>)) }
-                </Grid>);
+                <Table>
+                    <TableBody>
+                        { matrixResult.elements.map((row, i) => <TableRow key={ i }>{ row.map((entry, j) =>
+                            <TableCell key={ i * 31 + j }>{ entry }</TableCell>) }</TableRow>) }
+                    </TableBody>
+                </Table>
+            );
         } else if (validNumericResult) {
             return <Box>{ numericResult }</Box>;
         } else {
@@ -210,46 +211,50 @@ function OperationPanel(props: OperationPanelProps) {
 
 
     return (
-        <Container maxWidth={ false }>
-            <Box style={ {display: 'flex', flexDirection: 'column'} }>
-                <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-around'} }>
-                    {/* Left hand unary ops */ }
-                    <UnaryOps handler={ handleUnary('left') }/>
+        <>
+            {/* Left hand unary ops */ }
+            <UnaryOps style={ {gridArea: 'leftUnaryOps'} } handler={ handleUnary('left') }/>
 
-                    {/* Operator selection */ }
-                    <Box style={ {display: 'flex', flexDirection: 'column', justifyContent: 'space-between'} }>
-                        { validOperators.map((o, i) => {
-                            return (
-                                <Box key={ i } style={ {display: 'flex', justifyContent: 'center', padding: '5px'} }>
-                                    < Button variant='contained'
-                                             onClick={ changeOperatorTo(o) }>{ getSymbol(o) }</Button>
-                                </Box>);
-                        }) }
-                    </Box>
-
-                    {/* Right hand unary ops */ }
-                    { right.type === 'matrix' ? <UnaryOps handler={ handleUnary('right') }/> : '' }
-
-
-                </Box>
-                <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                    <ButtonPair LeftComponent={ DownArrow } onLeftButtonClick={ bumpDimension('down') }
-                                RightComponent={ UpArrow }
-                                onRightButtonClick={ bumpDimension('up') }/>
-                </Box>
-                <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                    <Button variant='contained' onClick={ submit }>Calculate</Button>
-                </Box>
-                <Box style={ {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    paddingTop: '50px',
-                    fontSize: '24',
-                } }>
-                    { renderResult() }
-                </Box>
+            {/* Operator selection */ }
+            <Box style={ {
+                gridArea: 'operatorChanger',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+            } }>
+                { validOperators.map((o, i) => {
+                    return (
+                        <Box key={ i } style={ {display: 'flex', justifyContent: 'center', padding: '5px'} }>
+                            < Button variant='contained'
+                                     onClick={ changeOperatorTo(o) }>{ getSymbol(o) }</Button>
+                        </Box>);
+                }) }
             </Box>
-        </Container>
+
+            {/* Right hand unary ops */ }
+            { right.type === 'matrix' ?
+                <UnaryOps style={ {gridArea: 'rightUnaryOps'} } handler={ handleUnary('right') }/> :
+                <Box style={ {gridArea: 'rightUnaryOps'} }/> }
+
+
+            <Box style={ {gridArea: 'dimension'} }>
+                <ButtonPair LeftComponent={ DownArrow } onLeftButtonClick={ bumpDimension('down') }
+                            RightComponent={ UpArrow }
+                            onRightButtonClick={ bumpDimension('up') }/>
+            </Box>
+            <Box style={ {gridArea: 'submit'} }>
+                <Button variant='contained' onClick={ submit }>Calculate</Button>
+            </Box>
+            <Box style={ {
+                gridArea: 'result',
+                display: 'flex',
+                justifyContent: 'center',
+                paddingTop: '50px',
+                fontSize: '24',
+            } }>
+                { renderResult() }
+            </Box>
+        </>
     );
 }
 

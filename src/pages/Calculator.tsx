@@ -42,7 +42,7 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
         if (rightHandler.type === 'scalar') {
             return <ScalarInput value={ rightHandler.value } setValue={ rightHandler.setter }/>;
         } else {
-            return <MatrixInput dimension={ dimension } values={ rightHandler.value }
+            return <MatrixInput style={ {gridArea: 'right'} } dimension={ dimension } values={ rightHandler.value }
                                 setValue={ rightHandler.setter }/>;
         }
     };
@@ -63,18 +63,32 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
 
     return (
         <>
-            <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} }>
+            <Box style={ {
+                display: 'grid',
+                gridTemplateColumns: '1fr min-content 1fr',
+                placeItems: 'center',
+                gridTemplateRows: '1fr repeat(4, min-content)',
+                gap: '1rem',
+                gridTemplateAreas: `
+                'leftMatrix operator right' 
+                'leftUnaryOps operatorChanger rightUnaryOps' 
+                'dimension dimension dimension' 
+                'submit submit submit'
+                'result result result'
+                `
+            } }>
                 { /* Left matrix */ }
-                <MatrixInput dimension={ dimension } values={ left } setValue={ updateLeft }/>
+                <MatrixInput style={ {gridArea: 'leftMatrix'} } dimension={ dimension } values={ left }
+                             setValue={ updateLeft }/>
 
                 <OperatorSymbol operator={ operator }/>
 
                 { /* Scalar or Matrix */ }
                 { getRight() }
-            </Box>
 
-            { /* Operations that can be applied to both */ }
-            <OperationPanel { ...operationPanelProps }/>
+                { /* Operations that can be applied to both */ }
+                <OperationPanel { ...operationPanelProps }/>
+            </Box>
         </>
     );
 }
