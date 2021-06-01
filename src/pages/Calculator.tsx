@@ -1,14 +1,6 @@
 import { OperatorType } from '../components/Operator';
 import React, { useReducer, useState } from 'react';
-import {
-    Either,
-    make2d,
-    makeReducer,
-    MatrixType,
-    packBinaryArguments,
-    packScalarArguments,
-    ScalarType
-} from '../utils';
+import { Either, make2d, makeReducer, MatrixType, ScalarType } from '../utils';
 import { None, Option } from 'ts-results';
 import { Box, Container } from '@material-ui/core';
 import { MatrixInput, OperationPanel, OperatorSymbol, ScalarInput } from '../components';
@@ -45,9 +37,6 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
         {type: 'scalar', value: rightScalar, setter: updateRightScalar} :
         {type: 'matrix', value: rightMatrix, setter: updateRightMatrix};
 
-    // Set function used to pack argument for rust API based on operands
-    const packingFunction = scalar ? packScalarArguments : packBinaryArguments;
-
     // Used for conditional rendering based on operands
     const getRight = () => {
         if (rightHandler.type === 'scalar') {
@@ -67,7 +56,6 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
         leftMatrixValues: left,
         setOperator,
         dimension,
-        packingFunction,
         setDimension,
         updateLeftMatrix: updateLeft,
         right: rightHandler

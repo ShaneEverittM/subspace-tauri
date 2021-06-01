@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.secondary,
             maxWidth: 100
         },
+        root: {
+            display: 'flex',
+            justifyContent: 'center'
+        }
     }),
 );
 
@@ -47,7 +51,7 @@ function ScalarInput({value, setValue}: ScalarInputProps) {
     };
 
     return (
-        <Container>
+        <Container className={ classes.root }>
             <Box style={ {display: 'flex', justifyContent: 'center', alignItems: 'center'} }>
                 <TextField
                     className={ classes.textField }

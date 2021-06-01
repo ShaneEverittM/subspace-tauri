@@ -1,7 +1,6 @@
 import { Err, Ok, Option, Result } from 'ts-results';
 import { invoke } from '@tauri-apps/api/tauri';
 import { handleError } from './Error';
-import { OperatorType } from '../components/Operator';
 import React from 'react';
 import { Action } from './Reducer';
 
@@ -36,6 +35,78 @@ export class Matrix<T> {
     }
 }
 
+type BinaryArgs = {
+    type: 'binary'
+    m1: Cell[][]
+    m2: Cell[][]
+}
+
+type ScalarArgs = {
+    type: 'scalar'
+    m: Cell[][]
+    x: Cell
+}
+
+type UnaryArgs = {
+    type: 'unary'
+    m: Cell[][]
+}
+
+type PackedBinaryArguments = {
+    type: 'binary'
+    m1: Matrix<number>
+    m2: Matrix<number>
+}
+
+type PackedUnaryArguments = {
+    type: 'unary'
+    m: Matrix<number>
+}
+
+type PackedScalarArguments = {
+    type: 'scalar'
+    m: Matrix<number>
+    x: number
+}
+
+export type ApiArguments = BinaryArgs | UnaryArgs | ScalarArgs
+export type PackedArguments = PackedBinaryArguments | PackedUnaryArguments | PackedScalarArguments;
+export type ApiPackResult = Result<PackedArguments, 'invalid input'>
+
+type MatrixResponse = {
+    type: 'matrix',
+    mat: Matrix<number>,
+}
+
+type NumberResponse = {
+    type: 'number',
+    num: number,
+}
+export type ApiResult = MatrixResponse | NumberResponse
+
+
+export function packArguments(args: ApiArguments): ApiPackResult {
+    switch (args.type) {
+        case 'unary':
+            return packUnaryArguments(args.m);
+        case 'binary':
+            return packBinaryArguments(args.m1, args.m2);
+        case 'scalar':
+            return packScalarArguments(args.m, args.x);
+
+    }
+}
+
+
+export function packUnaryArguments(values: Cell[][]): ApiPackResult {
+    if (values.flat().every(e => e.some)) {
+        return Ok({type: 'unary', m: new Matrix(values.map(row => row.map(e => e.unwrap())))});
+    } else {
+        return Err('invalid input');
+    }
+
+}
+
 /**
  * Takes the internal representation we use for React state and transforms it into the argument object
  * expected by Tauri, with error checking.
@@ -43,8 +114,7 @@ export class Matrix<T> {
  * @param left The values for the left matrix
  * @param right The values for the right matrix
  */
-export function packBinaryArguments(left: Array2d<Cell>, right: Array2d<Cell>):
-    Result<{ m1: Matrix<number>, m2: Matrix<number> }, 'invalid input'> {
+export function packBinaryArguments(left: Cell[][], right: Cell[][]): ApiPackResult {
 
     let m1: Matrix<number>;
     let m2: Matrix<number>;
@@ -61,11 +131,10 @@ export function packBinaryArguments(left: Array2d<Cell>, right: Array2d<Cell>):
         return Err('invalid input');
     }
 
-    return Ok({m1, m2});
+    return Ok({type: 'binary', m1, m2});
 }
 
-export function packScalarArguments(left: Array2d<Cell>, right: Cell):
-    Result<{ m: Matrix<number>, x: number }, 'invalid input'> {
+export function packScalarArguments(left: Cell[][], right: Cell): ApiPackResult {
 
     let m: Matrix<number>;
     let x: number;
@@ -82,19 +151,21 @@ export function packScalarArguments(left: Array2d<Cell>, right: Cell):
         return Err('invalid input');
     }
 
-    return Ok({m, x});
+    return Ok({type: 'scalar', m, x});
 }
 
-export function dispatchByOp(
-    operator: OperatorType,
-    opToFunc: (op: OperatorType) => string,
-    args: any,
-    callBack: (res: Matrix<number>) => void,
+export function dispatchByName(
+    funcName: string,
+    args: PackedArguments,
+    callBack: (res: ApiResult) => void,
 ) {
-    // index is safe because typescript is really neat :^)
-    invoke<Matrix<number>>(opToFunc(operator), args)
-        .then((res) => {
-            callBack(res);
+    invoke<Matrix<number> | number>(funcName, args)
+        .then((m) => {
+            if (typeof m === 'number') {
+                callBack({type: 'number', num: m});
+            } else {
+                callBack({type: 'matrix', mat: m});
+            }
         })
         .catch(handleError);
 }

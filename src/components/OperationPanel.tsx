@@ -1,7 +1,19 @@
 import React, { SetStateAction, useState } from 'react';
 
 import { Box, Button, Container, Grid } from '@material-ui/core';
-import { Action, Cell, dispatchByOp, Either, Matrix, MatrixType, range, ScalarType } from '../utils';
+import {
+    Action,
+    ApiArguments,
+    ApiResult,
+    Cell,
+    dispatchByName,
+    Either,
+    Matrix,
+    MatrixType,
+    packArguments,
+    range,
+    ScalarType
+} from '../utils';
 import { getSymbol, OperatorType } from './Operator';
 import { None } from 'ts-results';
 import { ButtonPair, OutputRow } from '../components';
@@ -23,8 +35,6 @@ export type OperationPanelProps = {
     leftMatrixValues: Cell[][]
     /// Updater dispatch for an index in the left matrix
     updateLeftMatrix: React.Dispatch<Action<Cell>>
-    /// Function used to transform the states into argument for the Tauri API
-    packingFunction: (a: any, b: any) => any,
     /// The current dimension
     dimension: number
     /// Updater dispatch for the dimension
@@ -46,6 +56,26 @@ const opToBinaryFunc: Record<OperatorType, string> = {
     multiply: 'mul_f64'
 };
 
+type UnaryOpsProps = {
+    handler: (func: string) => () => void
+}
+
+function UnaryOps({handler}: UnaryOpsProps) {
+    return (
+        <Box>
+            <Button variant='contained' onClick={ handler('transpose_f64') }>
+                Transpose
+            </Button>
+            <Button variant='contained' onClick={ handler('invert_f64') }>
+                Invert
+            </Button>
+            <Button variant='contained' onClick={ handler('determinant_f64') }>
+                Determinant
+            </Button>
+        </Box>
+    );
+}
+
 
 function OperationPanel(props: OperationPanelProps) {
     const {
@@ -58,11 +88,12 @@ function OperationPanel(props: OperationPanelProps) {
         updateLeftMatrix,
         dimension,
         setDimension,
-        packingFunction
     } = props;
 
-    const [result, setResult] = useState(new Matrix<number>([]));
-    const [validResult, setValidResult] = useState(false);
+    const [matrixResult, setMatrixResult] = useState(new Matrix<number>([]));
+    const [numericResult, setNumericResult] = useState(0);
+    const [validMatrixResult, setValidMatrixResult] = useState(false);
+    const [validNumericResult, setValidNumericResult] = useState(false);
 
 
     const getOperator = (op: OperatorType): string => {
@@ -74,22 +105,35 @@ function OperationPanel(props: OperationPanelProps) {
     };
 
     const submit = () => {
-        let maybeArgs = packingFunction(leftMatrixValues, right.value);
+        let apiArgs: ApiArguments;
+        if (right.type === 'scalar') {
+            apiArgs = {type: 'scalar', m: leftMatrixValues, x: right.value};
+        } else {
+            apiArgs = {type: 'binary', m1: leftMatrixValues, m2: right.value};
+        }
+        let maybeArgs = packArguments(apiArgs);
 
-        const callBack = (res: Matrix<number>) => {
-            setResult(res);
-            setValidResult(true);
+        const callBack = (res: ApiResult) => {
+            if (res.type === 'matrix') {
+                setMatrixResult(res.mat);
+                setValidMatrixResult(true);
+                setValidNumericResult(false);
+            } else {
+                setNumericResult(res.num);
+                setValidNumericResult(true);
+                setValidMatrixResult(false);
+            }
         };
 
         if (maybeArgs.ok) {
-            dispatchByOp(operator, getOperator, maybeArgs.val, callBack);
+            dispatchByName(getOperator(operator), maybeArgs.val, callBack);
         } else {
             console.log(maybeArgs.val);
             return;
         }
     };
 
-    const changeOperator = (operator: OperatorType) => () => {
+    const changeOperatorTo = (operator: OperatorType) => () => {
         setOperator(operator);
     };
 
@@ -110,41 +154,99 @@ function OperationPanel(props: OperationPanelProps) {
             right.setter({type: 'resize', newSize: newDimension, filler: None});
         }
 
-        setValidResult(false);
+        setValidNumericResult(false);
         setDimension(newDimension);
+    };
+
+
+    // Triple curried function!
+    const handleUnary = (position: 'left' | 'right') => (func: string) => () => {
+        const callBack = (res: ApiResult) => {
+            if (res.type === 'matrix') {
+                setMatrixResult(res.mat);
+                setValidMatrixResult(true);
+                setValidNumericResult(false);
+            } else {
+                setNumericResult(res.num);
+                setValidNumericResult(true);
+                setValidMatrixResult(false);
+            }
+        };
+
+        let values;
+        if (position === 'left') {
+            values = leftMatrixValues;
+        } else {
+            if (right.type === 'scalar') {
+                // Should not happen
+                return;
+            } else {
+                values = right.value;
+            }
+        }
+
+        const maybeArgs = packArguments({type: 'unary', m: values});
+        if (maybeArgs.ok && maybeArgs.val.type === 'unary') {
+            dispatchByName(func, {type: 'unary', m: maybeArgs.val.m}, callBack);
+        }
+    };
+
+    const renderResult = () => {
+        if (validMatrixResult) {
+            return (
+                <Grid container spacing={ 1 }>
+                    { range(dimension).map((row) => (
+                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
+                            <OutputRow dimension={ dimension } rowNumber={ row } row={ matrixResult.elements[row] }/>
+                        </Grid>)) }
+                </Grid>);
+        } else if (validNumericResult) {
+            return <Box>{ numericResult }</Box>;
+        } else {
+            return <div/>;
+        }
     };
 
 
     return (
         <Container maxWidth={ false }>
-            <Box style={ {display: 'flex', flexDirection: 'column', justifyContent: 'space-between'} }>
-                { validOperators.map((o, i) => {
-                    return (<Box key={ i } style={ {display: 'flex', justifyContent: 'center', padding: '5px'} }>
-                        < Button variant='contained' onClick={ changeOperator(o) }>{ getSymbol(o) }</Button>
-                    </Box>);
-                }) }
-            </Box>
-            <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                <ButtonPair LeftComponent={ DownArrow } onLeftButtonClick={ bumpDimension('down') }
-                            RightComponent={ UpArrow }
-                            onRightButtonClick={ bumpDimension('up') }/>
-            </Box>
-            <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
-                <Button variant='contained' onClick={ submit }>Calculate</Button>
-            </Box>
-            <Box style={ {
-                display: 'flex',
-                justifyContent: 'center',
-                paddingTop: '50px',
-                fontSize: '24',
-            } }>
-                <Grid container spacing={ 1 }>
-                    { validResult ? range(dimension).map((row) => (
-                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <OutputRow dimension={ dimension } rowNumber={ row } row={ result.elements[row] }/>
-                        </Grid>
-                    )) : '' }
-                </Grid>
+            <Box style={ {display: 'flex', flexDirection: 'column'} }>
+                <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-around'} }>
+                    {/* Left hand unary ops */ }
+                    <UnaryOps handler={ handleUnary('left') }/>
+
+                    {/* Operator selection */ }
+                    <Box style={ {display: 'flex', flexDirection: 'column', justifyContent: 'space-between'} }>
+                        { validOperators.map((o, i) => {
+                            return (
+                                <Box key={ i } style={ {display: 'flex', justifyContent: 'center', padding: '5px'} }>
+                                    < Button variant='contained'
+                                             onClick={ changeOperatorTo(o) }>{ getSymbol(o) }</Button>
+                                </Box>);
+                        }) }
+                    </Box>
+
+                    {/* Right hand unary ops */ }
+                    { right.type === 'matrix' ? <UnaryOps handler={ handleUnary('right') }/> : '' }
+
+
+                </Box>
+                <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
+                    <ButtonPair LeftComponent={ DownArrow } onLeftButtonClick={ bumpDimension('down') }
+                                RightComponent={ UpArrow }
+                                onRightButtonClick={ bumpDimension('up') }/>
+                </Box>
+                <Box style={ {display: 'flex', justifyContent: 'center', paddingTop: '50px'} }>
+                    <Button variant='contained' onClick={ submit }>Calculate</Button>
+                </Box>
+                <Box style={ {
+                    display: 'flex',
+                    justifyContent: 'center',
+                    paddingTop: '50px',
+                    fontSize: '24',
+                } }>
+                    { renderResult() }
+                </Box>
             </Box>
         </Container>
     );
