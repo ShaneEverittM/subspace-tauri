@@ -62,14 +62,14 @@ type UnaryOpsProps = {
 
 function UnaryOps({handler}: UnaryOpsProps) {
     return (
-        <Box>
-            <Button variant='contained' onClick={ handler('transpose_f64') }>
+        <Box style={ {display: 'flex', flexDirection: 'row', alignItems: 'center'} }>
+            <Button style={ {margin: '2px'} } variant='contained' onClick={ handler('transpose_f64') }>
                 Transpose
             </Button>
-            <Button variant='contained' onClick={ handler('invert_f64') }>
+            <Button style={ {margin: '2px'} } variant='contained' onClick={ handler('invert_f64') }>
                 Invert
             </Button>
-            <Button variant='contained' onClick={ handler('determinant_f64') }>
+            <Button style={ {margin: '2px'} } variant='contained' onClick={ handler('determinant_f64') }>
                 Determinant
             </Button>
         </Box>
