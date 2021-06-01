@@ -93,7 +93,6 @@ export function packArguments(args: ApiArguments): ApiPackResult {
             return packBinaryArguments(args.m1, args.m2);
         case 'scalar':
             return packScalarArguments(args.m, args.x);
-
     }
 }
 

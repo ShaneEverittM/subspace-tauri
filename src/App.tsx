@@ -5,7 +5,6 @@ import { Calculator, Splash } from './pages';
 import { TemporaryDrawer } from './components';
 
 import {
-    Container,
     createMuiTheme,
     CssBaseline,
     Divider,
@@ -63,16 +62,14 @@ function App() {
             <CssBaseline/>
             { /* Multiple pages */ }
             <HashRouter>
-                <Container style={ {padding: 'unset', display: 'flex', justifyContent: 'flex-start'} }>
-                    <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
-                </Container>
-                <Container>
-                    <Route exact path='/' component={ Splash }/>
-                    <Route path={ MatrixToMatrixPath } component={ () => (
-                        <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }/>) }/>
-                    <Route path={ MatrixToScalarPath } component={ () => (
-                        <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }/>) }/>
-                </Container>
+                {/*<Container style={ {padding: 'unset', display: 'flex', justifyContent: 'flex-start'} }>*/ }
+                <TemporaryDrawer screenEdge='left' items={ drawerItems }/>
+                {/*</Container>*/ }
+                <Route exact path='/' component={ Splash }/>
+                <Route path={ MatrixToMatrixPath } component={ () => (
+                    <Calculator scalar={ false } validOperators={ ['multiply', 'plus', 'minus'] }/>) }/>
+                <Route path={ MatrixToScalarPath } component={ () => (
+                    <Calculator scalar={ true } validOperators={ ['multiply', 'divide', 'plus', 'minus'] }/>) }/>
             </HashRouter>
         </ThemeProvider>
     );

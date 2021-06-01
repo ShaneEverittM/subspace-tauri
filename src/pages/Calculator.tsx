@@ -2,7 +2,7 @@ import { OperatorType } from '../components/Operator';
 import React, { useReducer, useState } from 'react';
 import { Either, make2d, makeReducer, MatrixType, ScalarType } from '../utils';
 import { None, Option } from 'ts-results';
-import { Box, Container } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { MatrixInput, OperationPanel, OperatorSymbol, ScalarInput } from '../components';
 import { OperationPanelProps } from '../components/OperationPanel';
 
@@ -62,7 +62,7 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
     };
 
     return (
-        <Container>
+        <>
             <Box style={ {display: 'flex', flexDirection: 'row', justifyContent: 'space-between'} }>
                 { /* Left matrix */ }
                 <MatrixInput dimension={ dimension } values={ left } setValue={ updateLeft }/>
@@ -75,9 +75,8 @@ function Calculator({validOperators, scalar}: CalculatorProps) {
 
             { /* Operations that can be applied to both */ }
             <OperationPanel { ...operationPanelProps }/>
-        </Container>
+        </>
     );
-
 }
 
 export default Calculator;
