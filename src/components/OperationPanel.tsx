@@ -174,7 +174,7 @@ function OperationPanel(props: OperationPanelProps) {
             }
         };
 
-        let values;
+        let values: Cell[][];
         if (position === 'left') {
             values = leftMatrixValues;
         } else {
