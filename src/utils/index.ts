@@ -1,4 +1,7 @@
 export * from './Error';
+export * from './Matrix';
+export * from './Reducer';
+
 
 /**
  * Creates an array from 0 to `length`.
@@ -8,25 +11,18 @@ export function range(length: number): number[] {
     return [...Array(length).keys()];
 }
 
-/**
- * Creates a two dimensional `Array<Array<T>>` with a given value for all elements.
- *
- * @param size The number of and size of each `Array<T>`.
- * @param init An optional initial value for all elements.
- */
-export function make2d<T>(size: number, init?: T): Matrix<T> {
-    if (init) {
-        return [...Array(size)].map((_) => Array<T>(size).fill(init));
-    } else {
-        return [...Array(size)].map((_) => Array<T>(size));
-    }
+// I think I'm funny
+function isNaNaN(number: number): boolean {
+    return !isNaN(number);
 }
 
 /**
- * Represents a type that might not be there in in situation where the `?` operator is not valid.
- *
- * @typeParam The type that might be there.
+ * Helper to check if string is _really_ a valid number
+ * @param value
  */
-export type Maybe<T> = T | undefined
+export function isNumber(value: string | number): boolean {
+    return (value != null) && (value !== '') && isNaNaN(Number(value.toString()));
+}
 
-export type Matrix<T> = Array<Array<T>>
+
+export type Either<A, B> = A | B;

@@ -1,9 +1,9 @@
-use crate::basis_api::{ApiError, ApiErrorKind};
+use crate::basis_api::{BasisError, BasisErrorKind};
 
-impl From<anyhow::Error> for ApiError {
+impl From<anyhow::Error> for BasisError {
     fn from(e: anyhow::Error) -> Self {
-        ApiError {
-            kind: ApiErrorKind::BasisError,
+        BasisError {
+            kind: BasisErrorKind::InternalError,
             msg: e.to_string(),
         }
     }

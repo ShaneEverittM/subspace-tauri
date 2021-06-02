@@ -1,2 +1,2 @@
-export { default as ArithmeticCalculator } from './BinaryCalculator';
-export { default as Splash } from './Splash';
+export { default as About } from './About';
+export { default as Calculator } from './Calculator';

@@ -1,22 +1,19 @@
-import React, { ChangeEvent, useReducer, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 
-import { make2d, Matrix, Maybe, range } from '../utils';
+import { Action, Cell, isNumber, range } from '../utils';
 
-import { Box, Container, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Box, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { None, Some } from 'ts-results';
 
 const useStyles = makeStyles((theme: Theme) =>
-    ({
-        root: {
-            flexGrow: 1,
-        },
+    createStyles({
         textField: {
             padding: theme.spacing(1),
             textAlign: 'center',
+            maxWidth: 125,
+            justifySelf: 'center',
             color: theme.palette.text.secondary,
         },
-        grid: {
-            justifyContent: 'center'
-        }
     }),
 );
 
@@ -26,59 +23,38 @@ type MatrixRowProps = {
 }
 
 type MatrixInputProps = {
+    style: React.CSSProperties,
     dimension: number
+    values: Array<Array<Cell>>
+    setValue: React.Dispatch<Action<Cell>>
 }
 
-/**
- * Represents the action applied to matrices held in state.
- *
- * @typeParam The value the matrix holds.
- */
-type Action<T> = { row: number, col: number, newVal: T }
-
-/**
- * Creates a specialized reducer function for `useReducer`.
- *
- * @typeParam The type of the element of the Matrix being edited.
- */
-function makeReducer<T>(): (previous: Matrix<T>, action: Action<T>) => Matrix<T> {
-    return function (previous: Matrix<T>, action: Action<T>): Matrix<T> {
-        const {row, col, newVal} = action;
-        previous[row][col] = newVal;
-        return previous;
-    };
-}
-
-function MatrixInput({dimension}: MatrixInputProps) {
-    const [values, setValue] = useReducer(makeReducer<Maybe<number>>(), make2d<Maybe<number>>(dimension, undefined));
-    const [errors, setError] = useReducer(makeReducer<boolean>(), make2d<boolean>(dimension, false));
-    const [focused, setFocused] = useState(make2d<boolean>(dimension, false));
+function MatrixInput({dimension, values, setValue, style}: MatrixInputProps) {
     const classes = useStyles();
 
     const handleInput = (row: number, col: number) => (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        // By creating a new focused array, React's state hook will see it as a new value, this will trigger a state
-        // update refreshing the error state but also store what was focused so that the user does not lose their place.
-        let newFocused = make2d(dimension, false);
-        newFocused[row][col] = true;
-        setFocused(newFocused);
-
-        let newVal = Number.parseInt(e.target.value, 10);
+        let valueStr = e.target.value;
 
         // If user entered an invalid string, or emptied the TextField
-        if (Number.isNaN(newVal) || e.target.value === '') {
-            // Set error
-            setError({row, col, newVal: true});
-
-            // Set value to undefined
-            setValue({row, col, newVal: undefined});
+        if (isNumber(valueStr)) {
+            setValue({type: 'cell-update', row, col, newVal: Some(Number(valueStr))});
         } else {
-            // Clear error
-            setError({row, col, newVal: false});
-
-            // Set value to current input value
-            setValue({row, col, newVal});
+            // Not valid number, could be due to bad input, or just an empty string
+                let curVal = values[row][col];
+                if (e.target.value === '') {
+                    // If input was emtpy, clear screen and state
+                    e.target.value = '';
+                    setValue({type: 'cell-update', row, col, newVal: None});
+                } else if (curVal.some) {
+                    // If there is a value and the last input wasn't nothing, maintain last valid state on screen
+                    e.target.value = curVal.unwrap().toString();
+                } else {
+                    // If we had no value and user entered bad input, keep it empty
+                    e.target.value = '';
+                }
+            }
         }
-    };
+    ;
 
     // Sub-component for each row of the matrix
     function FormRow({dimension, row}: MatrixRowProps) {
@@ -86,17 +62,17 @@ function MatrixInput({dimension}: MatrixInputProps) {
             <>
                 { range(dimension).map((col) => {
                     // Concatenate digits to form unique ID to appease React
-                    return (<Grid item key={ row + '' + col } xs={ 4 }>
-                        <TextField
-                            className={ classes.textField }
-                            required
-                            autoFocus={ focused[row][col] }
-                            error={ errors[row][col] }
-                            variant='outlined'
-                            size='small'
-                            value={ values[row][col] }
-                            onChange={ handleInput(row, col) }
-                        />
+                    return (<Grid item key={ row + '' + col }>
+                        <Box style={ {display: 'flex', justifyContent: 'center'} }>
+                            <TextField
+                                className={ classes.textField }
+                                required
+                                variant='outlined'
+                                size='small'
+                                value={ values[row][col].unwrapOr(undefined) }
+                                onChange={ handleInput(row, col) }
+                            />
+                        </Box>
                     </Grid>);
                 }) }
             </>
@@ -104,19 +80,17 @@ function MatrixInput({dimension}: MatrixInputProps) {
     }
 
     return (
-        <Container className={ classes.root }>
-            { /* 'clone' causes the underlying DOM node used by Box to just be the child node instead of a new div */ }
-            <Box justifyContent='center' clone>
-                <Grid container spacing={ 1 }>
-                    { range(dimension).map((row) => (
-                        <Grid key={ row + 1 } container item xs={ 12 } spacing={ 1 } wrap='nowrap'>
-                            <FormRow dimension={ dimension } row={ row }/>
-                        </Grid>
-                    )) }
-                </Grid>
-            </Box>
+        <Container style={ style }>
+            <Grid justify='center' container spacing={ 1 }>
+                { range(dimension).map((row) => (
+                    <Grid justify='center' key={ row + 1 } container item spacing={ 1 } wrap='nowrap'>
+                        <FormRow dimension={ dimension } row={ row }/>
+                    </Grid>
+                )) }
+            </Grid>
         </Container>
     );
+
 }
 
 export default MatrixInput;
