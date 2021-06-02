@@ -1,2 +1,2 @@
-export { default as About } from './Splash';
+export { default as About } from './About';
 export { default as Calculator } from './Calculator';
