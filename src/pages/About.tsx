@@ -24,9 +24,7 @@ function About() {
                             coming { link('https://tauri.studio/en/', 'Tauri ') } toolkit.
                             What makes it special is its ability to be cross-platform, yet still leverage hardware
                             acceleration by using runtime cpu detection. Its lack of a need for an internet connection
-                            and
-                            simple
-                            UI targets it towards students or educators.
+                            and simple UI targets it towards students or educators.
                         </Typography>
                         <br/>
                         <Typography>

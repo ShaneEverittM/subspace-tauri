@@ -40,21 +40,21 @@ function MatrixInput({dimension, values, setValue, style}: MatrixInputProps) {
             setValue({type: 'cell-update', row, col, newVal: Some(Number(valueStr))});
         } else {
             // Not valid number, could be due to bad input, or just an empty string
-                let curVal = values[row][col];
-                if (e.target.value === '') {
-                    // If input was emtpy, clear screen and state
-                    e.target.value = '';
-                    setValue({type: 'cell-update', row, col, newVal: None});
-                } else if (curVal.some) {
-                    // If there is a value and the last input wasn't nothing, maintain last valid state on screen
-                    e.target.value = curVal.unwrap().toString();
-                } else {
-                    // If we had no value and user entered bad input, keep it empty
-                    e.target.value = '';
-                }
+            let curVal = values[row][col];
+            if (e.target.value === '') {
+                // If input was emtpy, clear screen and state
+                e.target.value = '';
+                setValue({type: 'cell-update', row, col, newVal: None});
+            } else if (curVal.some) {
+                // If there is a value and the last input wasn't nothing, maintain last valid state on screen
+                e.target.value = curVal.unwrap().toString();
+            } else {
+                // If we had no value and user entered bad input, keep it empty
+                e.target.value = '';
             }
         }
-    ;
+    };
+
 
     // Sub-component for each row of the matrix
     function FormRow({dimension, row}: MatrixRowProps) {
